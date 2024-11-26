@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:PawPal"
+             x:Class="PawPal.AddTaskPage"
+             x:DataType="local:AddTaskPageViewModel"
+             Title="Add Task">
+
+    <ContentPage.Content>
+        <StackLayout Padding="10">
+            <Label Text="Add Task" FontSize="24" HorizontalOptions="Center" />
+
+            <!-- Picker to select pet -->
+            <Picker ItemsSource="{Binding Pets}"
+                ItemDisplayBinding="{Binding Name}"
+                SelectedItem="{Binding SelectedPet, Mode=TwoWay}" />
+
+            <!-- Task Name Entry -->
+            <Entry Placeholder="Task Name" Text="{Binding NewTaskName}" />
+
+            <!-- Due Date Picker -->
+            <DatePicker Date="{Binding NewTaskDueDate}" />
+
+            <!-- Button to add the task -->
+            <Button Text="Add Task" Command="{Binding AddTaskCommand}" />
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>
