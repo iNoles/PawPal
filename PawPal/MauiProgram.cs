@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
+using Plugin.LocalNotification;
 
 namespace PawPal;
 
@@ -15,18 +15,13 @@ public static class MauiProgram
 				fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
 				fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
 			});
-
-		string dbPath = Path.Combine(FileSystem.AppDataDirectory, "PawPal.db");
-		builder.Services.AddDbContext<PetCareDbContext>(options => options.UseSqlite($"Data Source={dbPath}"));
-
-		// Register Repository
-        builder.Services.AddScoped<PetRepository>();
-
 		// Register ViewModel
         builder.Services.AddTransient<MainPageViewModel>();
 		builder.Services.AddTransient<AddTaskPageViewModel>();
 	
 		builder.Services.AddTransient<AddTaskPage>();
+
+		builder.UseLocalNotification();
 
 #if DEBUG
 		builder.Logging.AddDebug();

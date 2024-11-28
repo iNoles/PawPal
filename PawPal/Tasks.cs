@@ -1,12 +1,16 @@
+using SQLite;
+
 namespace PawPal;
 
 public class Tasks
 {
+    [PrimaryKey, AutoIncrement]
     public int Id { get; set; }
 
-    public string TaskName { get; set; } = string.Empty; // Task name (non-nullable)
+    public string TaskName { get; set; } = string.Empty; // Task name
 
-    public DateTime DueDate { get; set; } // Date when the task is due (non-nullable)
+    public DateTime DueDate { get; set; } // Date when the task is due
 
-    public required Pet Pet { get; set; } // Navigation property to the related pet (non-nullable, enforced by required keyword in .NET 9)
+    [Indexed] // To improve performance of foreign key queries
+    public int PetId { get; set; }
 }

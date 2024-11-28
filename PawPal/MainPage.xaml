@@ -1,4 +1,5 @@
-﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:PawPal"
              x:Class="PawPal.MainPage"
@@ -11,20 +12,21 @@
             <Label Text="🐾 My Pets" 
                    FontSize="24"
                    HorizontalOptions="Center" 
-                   VerticalOptions="Start" />
-
+                   VerticalOptions="Start" 
+                   Grid.Row="0" />
+            
             <!-- New Pet Entry Section -->
-            <VerticalStackLayout Grid.Row="0" Padding="10">
+            <VerticalStackLayout Grid.Row="1" Padding="10">
                 <Entry Placeholder="Pet Name" Text="{Binding NewPetName}" />
                 <Entry Placeholder="Pet Species" Text="{Binding NewPetSpecies}" />
                 <DatePicker Date="{Binding NewPetDateOfBirth}" />
-                <Button Text="Add Pet" Command="{Binding AddPetCommand}" />
+                <!--Button Text="Add Pet" Command="{Binding AddPetCommand}" />-->
             </VerticalStackLayout>
 
             <!-- Pet Cards -->
-            <CollectionView Grid.Row="1" ItemsSource="{Binding Pets}">
+            <CollectionView Grid.Row="2" ItemsSource="{Binding Pets}" SelectionMode="Single" SelectedItem="{Binding SelectedPet, Mode=TwoWay}">
                 <CollectionView.ItemTemplate>
-                    <DataTemplate>
+                    <DataTemplate x:DataType="local:Pet">
                         <Border Margin="5" Stroke="Gray" StrokeThickness="1" BackgroundColor="White" Padding="10">
                             <Border.StrokeShape>
                                 <RoundRectangle CornerRadius="8" />
@@ -32,7 +34,7 @@
                             <VerticalStackLayout>
                                 <Label Text="{Binding Name}" FontAttributes="Bold" />
                                 <Label Text="{Binding Species}" FontSize="14" TextColor="Gray" />
-                                <Label Text="Next Task: {Binding NextTask}" FontSize="12" TextColor="DarkGray" />
+                                <!-- <Label Text="Next Task: {Binding NextTask}" FontSize="12" TextColor="DarkGray" /> -->
                             </VerticalStackLayout>
                         </Border>
                     </DataTemplate>

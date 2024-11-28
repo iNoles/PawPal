@@ -4,26 +4,36 @@ namespace PawPal;
 
 public class NotificationService
 {
-    public static void SchedulePetActivityReminder(string taskName, DateTime dueDate, string petName)
+    public static async Task InitializeNotificationsAsync()
     {
-        // Create a notification
-        var notification = new NotificationRequest
+        if (!await LocalNotificationCenter.Current.AreNotificationsEnabled())
         {
-            Title = $"{petName} - {taskName}",
-            Description = $"Don't forget to {taskName} for {petName}.",
-            NotificationId = new Random().Next(1, 1000), // Random ID for each task
-            Schedule = new NotificationRequestSchedule
+            // Request permission if not granted
+            var permissionGranted = await LocalNotificationCenter.Current.RequestNotificationPermission();
+            if (!permissionGranted)
             {
-                NotifyTime = dueDate // The time when the notification should appear
+                Console.WriteLine("Notification permission denied.");
             }
-        };
-
-        // Schedule the notification
-        LocalNotificationCenter.Current.Show(notification);
+        }
     }
 
-    public static void CancelReminder(int notificationId)
+    public static async Task ScheduleNotificationAsync(Tasks task)
     {
-        LocalNotificationCenter.Current.Cancel(notificationId);
+        if (task.DueDate > DateTime.Now) // Only schedule for future dates
+        {
+            var notification = new NotificationRequest
+            {
+                NotificationId = task.Id, // Unique ID for the task
+                Title = "Task Reminder",
+                Description = $"Task '{task.TaskName}' is due soon!",
+                ReturningData = $"TaskId:{task.Id}",
+                Schedule =
+                {
+                    NotifyTime = task.DueDate // Schedule for the task's due date
+                }
+            };
+
+            await LocalNotificationCenter.Current.Show(notification);
+        }
     }
 }

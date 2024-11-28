@@ -1,26 +1,26 @@
-using System.ComponentModel.DataAnnotations;
+using SQLite;
 
 namespace PawPal;
 
 public class Pet
 {
+    [PrimaryKey, AutoIncrement]
     public int Id { get; set; }
 
-    [Required]
-    [MaxLength(50)] // Optional: Sets a max length for the Name field in the database
-    public string Name { get; set; } = string.Empty; // Non-nullable
+    public  string Name { get; set; } = string.Empty;
 
-    [Required]
-    [MaxLength(30)] // Optional: Sets a max length for the Species field
-    public string Species { get; set; } = string.Empty; // Required and non-nullable
+    public  string Species { get; set; } = string.Empty; 
 
-    public string? Breed { get; set; } // Optional
+    public string? Breed { get; set; }
 
-    [Required]
-    public DateTime DateOfBirth { get; set; } // Required and non-nullable
+    public DateTime DateOfBirth { get; set; }
 
-    public string? MedicalRecords { get; set; } // Optional
+    public string? MedicalRecords { get; set; }
 
-     // Navigation property to related tasks
     public List<Tasks> Tasks { get; set; } = []; // Each pet can have multiple tasks
+
+    public override string ToString()
+    {
+        return $"{Name} ({Species}, {Breed ?? "Unknown Breed"})";
+    }
 }

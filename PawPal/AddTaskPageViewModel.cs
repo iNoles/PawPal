@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
@@ -6,13 +7,13 @@ namespace PawPal;
 
 public class AddTaskPageViewModel : INotifyPropertyChanged
 {
-    private readonly PetRepository _petRepository;
-    private List<Pet> _pets = [];
+    private readonly DatabaseService _databaseService;
+    private ObservableCollection<Pet> _pets = [];
     private Pet? _selectedPet;
     private string _newTaskName = string.Empty;
     private DateTime _newTaskDueDate = DateTime.Now;
 
-    public List<Pet> Pets
+    public ObservableCollection<Pet> Pets
     {
         get => _pets;
         set => SetProperty(ref _pets, value);
@@ -21,13 +22,21 @@ public class AddTaskPageViewModel : INotifyPropertyChanged
     public Pet? SelectedPet
     {
         get => _selectedPet;
-        set => SetProperty(ref _selectedPet, value);
+        set
+        {
+            SetProperty(ref _selectedPet, value);
+            UpdateCommandStates();
+        }
     }
 
     public string NewTaskName
     {
         get => _newTaskName;
-        set => SetProperty(ref _newTaskName, value);
+        set
+        {
+            SetProperty(ref _newTaskName, value);
+            UpdateCommandStates();
+        }
     }
 
     public DateTime NewTaskDueDate
@@ -40,37 +49,46 @@ public class AddTaskPageViewModel : INotifyPropertyChanged
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    public AddTaskPageViewModel(PetRepository petRepository, NotificationService notificationService)
+    public AddTaskPageViewModel()
     {
-        _petRepository = petRepository;
-        AddTaskCommand = new Command(async () => await AddTasksAsync());
-        LoadPetsAsync();
-    }
+        _databaseService = new DatabaseService();
+        Pets = [.. _databaseService.GetPets()];
 
-    private async void LoadPetsAsync()
-    {
-        Pets = await _petRepository.GetPetsWithTasksAsync();
+        AddTaskCommand = new Command(
+            async () => await AddTasksAsync(),
+            () => SelectedPet != null && !string.IsNullOrWhiteSpace(NewTaskName)
+        );
     }
 
     private async Task AddTasksAsync()
     {
-        if (SelectedPet == null || string.IsNullOrWhiteSpace(NewTaskName))
-            return;
-
-        var newTask = new Tasks
+        try
         {
-            TaskName = NewTaskName,
-            DueDate = NewTaskDueDate,
-            Pet = SelectedPet
-        };
+            if (SelectedPet == null || string.IsNullOrWhiteSpace(NewTaskName))
+                return;
 
-        // Save the task to the pet and repository
-        await _petRepository.AddTaskToPetAsync(SelectedPet.Id, newTask);
+            var newTask = new Tasks
+            {
+                TaskName = NewTaskName,
+                DueDate = NewTaskDueDate,
+                PetId = SelectedPet.Id
+            };
 
-        // Schedule a notification for the task
-        NotificationService.SchedulePetActivityReminder(newTask.TaskName, newTask.DueDate, SelectedPet.Name);
+            _databaseService.InsertTasks(newTask);
 
-        NewTaskName = string.Empty; // Clear the task input
+            await NotificationService.ScheduleNotificationAsync(newTask);
+
+            NewTaskName = string.Empty;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error adding task: {ex.Message}");
+        }
+    }
+
+    private void UpdateCommandStates()
+    {
+        ((Command)AddTaskCommand).ChangeCanExecute();
     }
 
     protected void SetProperty<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)

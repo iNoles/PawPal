@@ -7,9 +7,9 @@ namespace PawPal;
 
 public class MainPageViewModel : INotifyPropertyChanged
 {
-    private readonly PetRepository _petRepository;
-
-    public ObservableCollection<Pet> Pets { get; } = [];
+    private readonly DatabaseService _databaseService;
+    private ObservableCollection<Pet> _pets = [];
+    private Pet? _selectedPet;
 
     private string _newPetName = string.Empty;
     public string NewPetName
@@ -32,27 +32,44 @@ public class MainPageViewModel : INotifyPropertyChanged
         set => SetProperty(ref _newPetDateOfBirth, value);
     }
 
-    public ICommand AddPetCommand { get; }
-    public ICommand LoadPetsCommand { get; }
+    public ObservableCollection<Pet> Pets
+    {
+        get => _pets;
+        set => SetProperty(ref _pets, value);
+    }
+
+    public Pet? SelectedPet
+    {
+        get => _selectedPet;
+        set
+        {
+            _selectedPet = value;
+            if (_selectedPet != null)
+            {
+                NavigateToProfile(_selectedPet);
+            }
+        }
+    }
+
+    // Command for inserting a new pet
+    public ICommand InsertPetCommand { get; }
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    public MainPageViewModel(PetRepository petRepository)
+    public MainPageViewModel()
     {
-        _petRepository = petRepository;
+        _databaseService = new DatabaseService();
+        //Pets = [.. _databaseService.GetPets()];
 
-        AddPetCommand = new Command(async () => await AddPetAsync());
-        LoadPetsCommand = new Command(async () => await LoadPetsAsync());
+        // Populate initial pets data
+        LoadPets();
+
+        // Initialize the InsertPetCommand with the method that handles the pet insertion
+        InsertPetCommand = new Command(InsertPet);
     }
 
-    private async Task AddPetAsync()
+    private void InsertPet()
     {
-        if (string.IsNullOrWhiteSpace(NewPetName) || string.IsNullOrWhiteSpace(NewPetSpecies))
-        {
-            // Handle validation error (e.g., show an alert)
-            return; // Return a completed task
-        }
-
         var newPet = new Pet
         {
             Name = NewPetName,
@@ -60,19 +77,9 @@ public class MainPageViewModel : INotifyPropertyChanged
             DateOfBirth = NewPetDateOfBirth
         };
 
-        await _petRepository.AddPetAsync(newPet);
-        await LoadPetsAsync();
+        _databaseService.InsertPet(newPet);
+        Pets.Add(newPet);
         ClearNewPetFields();
-    }
-
-    private async Task LoadPetsAsync()
-    {
-        Pets.Clear();
-        var pets = await _petRepository.GetPetsWithTasksAsync();
-        foreach (var pet in pets)
-        {
-            Pets.Add(pet);
-        }
     }
 
     private void ClearNewPetFields()
@@ -80,6 +87,27 @@ public class MainPageViewModel : INotifyPropertyChanged
         NewPetName = string.Empty;
         NewPetSpecies = string.Empty;
         NewPetDateOfBirth = DateTime.Now;
+    }
+
+    private void LoadPets()
+    {
+        Pets.Add(new Pet { Id = 1, Name = "Buddy", Species = "Dog", DateOfBirth = new DateTime(2018, 5, 20) });
+        Pets.Add(new Pet { Id = 2, Name = "Mittens", Species = "Cat", DateOfBirth = new DateTime(2020, 11, 15) });
+        Pets.Add(new Pet { Id = 3, Name = "Charlie", Species = "Bird", DateOfBirth = new DateTime(2021, 3, 10) });
+        Pets.Add(new Pet { Id = 4, Name = "Luna", Species = "Rabbit", DateOfBirth = new DateTime(2019, 7, 8) });
+    }
+
+    private async static void NavigateToProfile(Pet pet)
+    {
+        Dictionary<string, object> parameters = new() {
+            { "id", pet.Id },
+            { "name", pet.Name },
+            { "species", pet.Species},
+            { "breed", pet.Breed ?? string.Empty},
+            { "birthDate", pet.DateOfBirth},
+            { "medical", pet.MedicalRecords ?? string.Empty}
+        };
+        await Shell.Current.GoToAsync("profile", parameters);
     }
 
     protected void SetProperty<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)

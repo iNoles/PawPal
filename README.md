@@ -4,17 +4,17 @@ PawPal is a mobile application built using .NET MAUI designed to help pet owners
 
 ## Features
 
-- **Add Pets**: Add new pets with their names, species, and date of birth
-- **Manage Pet Tasks**: Assign and track tasks for each pet
-- **Task Scheduling**: Set reminders for tasks related to pets
-- **Notification Support**: The app uses local notifications to remind users of upcoming pet tasks to schedule by due date
+- **Add Pets**: Add new pets with their names, species, and date of birth.
+- **Manage Pet Tasks**: Assign and track tasks for each pet.
+- **Task Scheduling**: Set reminders for tasks related to pets.
+- **Notification Support**: The app uses local notifications to remind users of upcoming pet tasks by their due date.
 
 ## Technologies Used
 
-- **.NET MAUI**: Cross-platform mobile app framework for building iOS, Android, and Windows apps
-- **Entity Framework Core**: ORM for database operations using SQLite
-- **C#**: Primary programming language for development
-- **XAML**: For building the UI
+-  **.NET MAUI**: A cross-platform mobile app framework for building iOS, Android, and Windows apps. MAUI enables a single codebase for all platforms.
+-  **C#**: Primary programming language used for development, allowing for strong typing and modern object-oriented programming features.
+-  **XAML**: A declarative language for building user interfaces, primarily used with .NET-based applications.
+-  **SQLite**: A lightweight, serverless SQL database used for persisting pet and task data locally on the device.
 
 ## Getting Started
 
@@ -26,7 +26,6 @@ Ensure you have the following installed on your machine:
 
 - [.NET 9 SDK](https://dotnet.microsoft.com/download/dotnet)
 - Visual Studio 2022 or later with **.NET MAUI** workload
-- SQLite (used for local data storage)
 
 ### Installation
 
@@ -51,21 +50,7 @@ Ensure you have the following installed on your machine:
    dotnet run
    ```
 
-5. The app should launch on your device/emulator, allowing you to add pets, assign tasks, and track them.
-
-## Features
-
-### 1. Add Pets
-
-Users can add new pets by providing their name, species, and date of birth. Pets are stored in an SQLite database for persistent storage.
-
-### 2. Assign Tasks to Pets
-
-Each pet can have multiple tasks. Tasks can be added to a pet and tracked with a due date.
-
-### 3. Task Notifications
-
-The app uses local notifications to remind users of upcoming pet tasks.
+5. The app should launch on your device or emulator, allowing you to add pets, assign tasks, and track them.
 
 ## Contribution
 

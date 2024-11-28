@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:PawPal"
+             x:Class="PawPal.PetProfilePage"
+             x:DataType="local:PetProfileViewModel"
+             Title="Pet Profile">
+
+    <ContentPage.Content>
+        <StackLayout Padding="10">
+            <Label Text="{Binding SelectedPet.Name}" FontSize="24" HorizontalOptions="Center" />
+            <Label Text="{Binding SelectedPet.Species}" FontSize="18" HorizontalOptions="Center" />
+            <Label Text="{Binding SelectedPet.Breed}" FontSize="16" HorizontalOptions="Center" />
+            <Label Text="Date of Birth:" FontAttributes="Bold" />
+            <Label Text="{Binding SelectedPet.DateOfBirth, StringFormat='{0:MM/dd/yyyy}'}" />
+            <Label Text="Medical Records:" FontAttributes="Bold" />
+            <Label Text="{Binding SelectedPet.MedicalRecords}" />
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

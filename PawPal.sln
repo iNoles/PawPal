@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PawPal", "PawPal\PawPal.csproj", "{7EFA884F-B8A4-43E6-BC03-7C717E845293}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PawPal", "PawPal\PawPal.csproj", "{B8A39F4A-FB75-4EDF-B710-2DF35F19EFD4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -14,9 +14,9 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{7EFA884F-B8A4-43E6-BC03-7C717E845293}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7EFA884F-B8A4-43E6-BC03-7C717E845293}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7EFA884F-B8A4-43E6-BC03-7C717E845293}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7EFA884F-B8A4-43E6-BC03-7C717E845293}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B8A39F4A-FB75-4EDF-B710-2DF35F19EFD4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B8A39F4A-FB75-4EDF-B710-2DF35F19EFD4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B8A39F4A-FB75-4EDF-B710-2DF35F19EFD4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B8A39F4A-FB75-4EDF-B710-2DF35F19EFD4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
