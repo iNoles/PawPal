@@ -11,6 +11,8 @@ public class Tasks
 
     public DateTime DueDate { get; set; } // Date when the task is due
 
+    public bool IsCompleted { get; set; } = false;
+
     [Indexed] // To improve performance of foreign key queries
     public int PetId { get; set; }
 }

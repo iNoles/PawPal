@@ -7,7 +7,7 @@
              Title="Pet Care Organizer">
 
     <ContentPage.Content>
-        <Grid RowDefinitions="Auto, *, Auto" Padding="10">
+        <Grid RowDefinitions="Auto, Auto, *, Auto" Padding="10" RowSpacing="10">
             <!-- Header -->
             <Label Text="🐾 My Pets" 
                    FontSize="24"
@@ -15,31 +15,43 @@
                    VerticalOptions="Start" 
                    Grid.Row="0" />
             
-            <!-- New Pet Entry Section -->
-            <VerticalStackLayout Grid.Row="1" Padding="10">
+            <!-- Add Pet Section -->
+            <VerticalStackLayout Grid.Row="1" Padding="10" Spacing="5">
+                <Label Text="Add Pet" 
+                       FontSize="18" 
+                       FontAttributes="Bold" 
+                       HorizontalOptions="Start" />
+                
                 <Entry Placeholder="Pet Name" Text="{Binding NewPetName}" />
                 <Entry Placeholder="Pet Species" Text="{Binding NewPetSpecies}" />
                 <DatePicker Date="{Binding NewPetDateOfBirth}" />
-                <!--Button Text="Add Pet" Command="{Binding AddPetCommand}" />-->
+                <Button Text="Add Pet" Command="{Binding InsertPetCommand}" />
             </VerticalStackLayout>
 
-            <!-- Pet Cards -->
-            <CollectionView Grid.Row="2" ItemsSource="{Binding Pets}" SelectionMode="Single" SelectedItem="{Binding SelectedPet, Mode=TwoWay}">
-                <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="local:Pet">
-                        <Border Margin="5" Stroke="Gray" StrokeThickness="1" BackgroundColor="White" Padding="10">
-                            <Border.StrokeShape>
-                                <RoundRectangle CornerRadius="8" />
-                            </Border.StrokeShape>
-                            <VerticalStackLayout>
-                                <Label Text="{Binding Name}" FontAttributes="Bold" />
-                                <Label Text="{Binding Species}" FontSize="14" TextColor="Gray" />
-                                <!-- <Label Text="Next Task: {Binding NextTask}" FontSize="12" TextColor="DarkGray" /> -->
-                            </VerticalStackLayout>
-                        </Border>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
+            <!-- View Pets Section -->
+            <VerticalStackLayout Grid.Row="2" Padding="5" Spacing="5">
+                <Label Text="View Pets" 
+                       FontSize="18" 
+                       FontAttributes="Bold"
+                       HorizontalOptions="Start" />
+
+                <CollectionView ItemsSource="{Binding Pets}" SelectionMode="Single" SelectedItem="{Binding SelectedPet, Mode=TwoWay}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="local:Pet">
+                            <Border Margin="5" Stroke="Gray" StrokeThickness="1" Padding="10">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="8" />
+                                </Border.StrokeShape>
+                                <VerticalStackLayout>
+                                    <Label Text="{Binding Name}" FontAttributes="Bold" />
+                                    <Label Text="{Binding Species}" FontSize="14" TextColor="Gray" />
+                                    <!-- <Label Text="Next Task: {Binding NextTask}" FontSize="12" TextColor="DarkGray" /> -->
+                                </VerticalStackLayout>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </VerticalStackLayout>
         </Grid>
     </ContentPage.Content>
 </ContentPage>

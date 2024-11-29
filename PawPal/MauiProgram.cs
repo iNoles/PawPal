@@ -15,13 +15,21 @@ public static class MauiProgram
 				fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
 				fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
 			});
-		// Register ViewModel
-        builder.Services.AddTransient<MainPageViewModel>();
-		builder.Services.AddTransient<AddTaskPageViewModel>();
-	
-		builder.Services.AddTransient<AddTaskPage>();
 
-		builder.UseLocalNotification();
+		try
+		{
+			builder.UseLocalNotification();
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"LocalNotification initialization failed: {ex.Message}");
+		}
+
+		// Register ViewModel
+		builder.Services.AddTransient<MainPageViewModel>();
+		builder.Services.AddTransient<AddTaskPageViewModel>();
+
+		builder.Services.AddTransient<AddTaskPage>();
 
 #if DEBUG
 		builder.Logging.AddDebug();

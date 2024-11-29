@@ -59,10 +59,7 @@ public class MainPageViewModel : INotifyPropertyChanged
     public MainPageViewModel()
     {
         _databaseService = new DatabaseService();
-        //Pets = [.. _databaseService.GetPets()];
-
-        // Populate initial pets data
-        LoadPets();
+        Pets = [.. _databaseService.GetPets()];
 
         // Initialize the InsertPetCommand with the method that handles the pet insertion
         InsertPetCommand = new Command(InsertPet);
@@ -87,14 +84,6 @@ public class MainPageViewModel : INotifyPropertyChanged
         NewPetName = string.Empty;
         NewPetSpecies = string.Empty;
         NewPetDateOfBirth = DateTime.Now;
-    }
-
-    private void LoadPets()
-    {
-        Pets.Add(new Pet { Id = 1, Name = "Buddy", Species = "Dog", DateOfBirth = new DateTime(2018, 5, 20) });
-        Pets.Add(new Pet { Id = 2, Name = "Mittens", Species = "Cat", DateOfBirth = new DateTime(2020, 11, 15) });
-        Pets.Add(new Pet { Id = 3, Name = "Charlie", Species = "Bird", DateOfBirth = new DateTime(2021, 3, 10) });
-        Pets.Add(new Pet { Id = 4, Name = "Luna", Species = "Rabbit", DateOfBirth = new DateTime(2019, 7, 8) });
     }
 
     private async static void NavigateToProfile(Pet pet)

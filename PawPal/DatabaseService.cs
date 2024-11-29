@@ -1,3 +1,4 @@
+using System.Linq;
 using SQLite;
 
 namespace PawPal;
@@ -38,6 +39,14 @@ public class DatabaseService
 
     public List<Tasks> GetTasksForPet(int petId)
     {
-        return [.. _database.Table<Tasks>().Where(task => task.PetId == petId)];
+        return [.. _database.Table<Tasks>().Where(t => t.PetId == petId)];
+    }
+
+    public Tasks GetNextTask(int petId)
+    {
+        return _database.Table<Tasks>()
+                        .Where(t => t.PetId == petId && !t.IsCompleted)
+                        .OrderBy(t => t.DueDate)
+                        .FirstOrDefault();
     }
 }
