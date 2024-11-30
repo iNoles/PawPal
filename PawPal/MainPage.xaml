@@ -45,7 +45,29 @@
                                 <VerticalStackLayout>
                                     <Label Text="{Binding Name}" FontAttributes="Bold" />
                                     <Label Text="{Binding Species}" FontSize="14" TextColor="Gray" />
-                                    <!-- <Label Text="Next Task: {Binding NextTask}" FontSize="12" TextColor="DarkGray" /> -->
+                                </VerticalStackLayout>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </VerticalStackLayout>
+
+            <VerticalStackLayout Grid.Row="3" Padding="5" Spacing="5">
+                <Label Text="Upcoming Tasks"
+                    FontSize="18"
+                    FontAttributes="Bold"
+                    HorizontalOptions="Start" />
+                <CollectionView ItemsSource="{Binding UpcomingTasks}" SelectionMode="None">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="local:Tasks">
+                            <Border Margin="5" Stroke="Gray" StrokeThickness="1" Padding="10">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="8" />
+                                </Border.StrokeShape>
+                                <VerticalStackLayout>
+                                    <Label Text="{Binding TaskName}" FontAttributes="Bold" />
+                                    <Label Text="{Binding DueDate, StringFormat='Due: {0:MMM dd, yyyy}'}" FontSize="12" TextColor="Gray" />
+                                    <CheckBox IsChecked="{Binding IsCompleted}" />
                                 </VerticalStackLayout>
                             </Border>
                         </DataTemplate>

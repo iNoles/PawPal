@@ -9,6 +9,8 @@ public class MainPageViewModel : INotifyPropertyChanged
 {
     private readonly DatabaseService _databaseService;
     private ObservableCollection<Pet> _pets = [];
+    private ObservableCollection<Tasks> _upcomingTasks = [];
+
     private Pet? _selectedPet;
 
     private string _newPetName = string.Empty;
@@ -38,18 +40,24 @@ public class MainPageViewModel : INotifyPropertyChanged
         set => SetProperty(ref _pets, value);
     }
 
-    public Pet? SelectedPet
+    public ObservableCollection<Tasks> UpcomingTasks
     {
-        get => _selectedPet;
-        set
+        get => _upcomingTasks;
+        set => SetProperty(ref _upcomingTasks, value);
+    }
+
+public Pet? SelectedPet
+{
+    get => _selectedPet;
+    set
+    {
+        SetProperty(ref _selectedPet, value);
+        if (_selectedPet != null)
         {
-            _selectedPet = value;
-            if (_selectedPet != null)
-            {
-                NavigateToProfile(_selectedPet);
-            }
+            LoadTasksForSelectedPet(_selectedPet.Id);
         }
     }
+}
 
     // Command for inserting a new pet
     public ICommand InsertPetCommand { get; }
@@ -63,6 +71,15 @@ public class MainPageViewModel : INotifyPropertyChanged
 
         // Initialize the InsertPetCommand with the method that handles the pet insertion
         InsertPetCommand = new Command(InsertPet);
+    }
+
+    private void LoadTasksForSelectedPet(int petId)
+    {
+        // Fetch tasks for the selected pet
+        var tasks = _databaseService.GetTasksForPet(petId);
+
+        // Filter tasks that are not completed and sort by due date
+        UpcomingTasks = [.. tasks.Where(t => !t.IsCompleted).OrderBy(t => t.DueDate)];
     }
 
     private void InsertPet()
@@ -86,7 +103,7 @@ public class MainPageViewModel : INotifyPropertyChanged
         NewPetDateOfBirth = DateTime.Now;
     }
 
-    private async static void NavigateToProfile(Pet pet)
+    /*private async static void NavigateToProfile(Pet pet)
     {
         Dictionary<string, object> parameters = new() {
             { "id", pet.Id },
@@ -97,7 +114,7 @@ public class MainPageViewModel : INotifyPropertyChanged
             { "medical", pet.MedicalRecords ?? string.Empty}
         };
         await Shell.Current.GoToAsync("profile", parameters);
-    }
+    }*/
 
     protected void SetProperty<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
     {
