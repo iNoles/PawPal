@@ -19,6 +19,7 @@ PawPal is a mobile application built using .NET MAUI designed to help pet owners
 -  **C#**: Primary programming language used for development, allowing for strong typing and modern object-oriented programming features.
 -  **XAML**: A declarative language for building user interfaces, primarily used with .NET-based applications.
 -  **SQLite**: A lightweight, serverless SQL database used for persisting pet and task data locally on the device.
+-  **LINQ**: Used for querying and manipulating collections of pet and task data, enabling clean and efficient operations such as sorting, filtering, and aggregating data.
 
 ## Getting Started
 
