@@ -9,6 +9,10 @@ PawPal is a mobile application built using .NET MAUI designed to help pet owners
 - **Task Scheduling**: Set reminders for tasks related to pets.
 - **Notification Support**: The app uses local notifications to remind users of upcoming pet tasks by their due date.
 
+## Screenshots
+
+![Home Screen](screenshots/maui-desktop.png)
+
 ## Technologies Used
 
 -  **.NET MAUI**: A cross-platform mobile app framework for building iOS, Android, and Windows apps. MAUI enables a single codebase for all platforms.
