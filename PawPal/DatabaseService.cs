@@ -41,4 +41,12 @@ public class DatabaseService
     {
         return [.. _database.Table<Tasks>().Where(t => t.PetId == petId)];
     }
+
+    public List<Tasks> GetTasksForMonth(DateTime month)
+    {
+        var startOfMonth = new DateTime(month.Year, month.Month, 1);
+        var endOfMonth = startOfMonth.AddMonths(1).AddDays(-1);
+
+        return [.. _database.Table<Tasks>().Where(task => task.DueDate >= startOfMonth && task.DueDate <= endOfMonth)];
+    }
 }

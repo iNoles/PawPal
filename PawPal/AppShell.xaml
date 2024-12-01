@@ -22,4 +22,12 @@
         Title="Add Task"
         ContentTemplate="{DataTemplate local:AddTaskPage}"
         Route="AddTaskPage" />
+    
+    <!-- Calendar Page -->
+    <ShellContent
+        Title="Calendar"
+        ContentTemplate="{DataTemplate local:CalendarPage}"
+        Route="calendar" />
+
+
 </Shell>
