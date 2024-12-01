@@ -1,5 +1,3 @@
-using System;
-
 namespace PawPal;
 
 public class CalendarDay

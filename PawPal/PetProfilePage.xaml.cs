@@ -1,4 +1,6 @@
 
+using PawPal.ViewModel;
+
 namespace PawPal;
 
 public partial class PetProfilePage : ContentPage, IQueryAttributable

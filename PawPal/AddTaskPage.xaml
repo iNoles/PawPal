@@ -22,7 +22,7 @@
             <DatePicker Date="{Binding NewTaskDueDate}" />
 
             <!-- Button to add the task -->
-            <Button Text="Add Task" Command="{Binding AddTaskCommand}" />
+            <Button Text="Add Task" Command="{Binding SaveTaskCommand}" />
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

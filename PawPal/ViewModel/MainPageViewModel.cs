@@ -1,6 +1,5 @@
 using System.Collections.ObjectModel;
 using System.Windows.Input;
-using UIKit;
 
 namespace PawPal.ViewModel;
 
