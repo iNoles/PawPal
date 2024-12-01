@@ -1,11 +1,10 @@
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using System.Windows.Input;
+using UIKit;
 
-namespace PawPal;
+namespace PawPal.ViewModel;
 
-public class MainPageViewModel : INotifyPropertyChanged
+public class MainPageViewModel : BaseViewModel
 {
     private readonly DatabaseService _databaseService;
     private ObservableCollection<Pet> _pets = [];
@@ -46,28 +45,39 @@ public class MainPageViewModel : INotifyPropertyChanged
         set => SetProperty(ref _upcomingTasks, value);
     }
 
-public Pet? SelectedPet
-{
-    get => _selectedPet;
-    set
+    public Pet? SelectedPet
     {
-        SetProperty(ref _selectedPet, value);
-        if (_selectedPet != null)
+        get => _selectedPet;
+        set
         {
-            LoadTasksForSelectedPet(_selectedPet.Id);
+            SetProperty(ref _selectedPet, value);
+            if (_selectedPet != null)
+            {
+                LoadTasksForSelectedPet(_selectedPet.Id);
+            }
         }
     }
-}
 
     // Command for inserting a new pet
     public ICommand InsertPetCommand { get; }
 
-    public event PropertyChangedEventHandler? PropertyChanged;
-
     public MainPageViewModel()
     {
         _databaseService = new DatabaseService();
-        Pets = [.. _databaseService.GetPets()];
+        Pets = [.. _databaseService.GetPets().Select(pet =>
+    {
+        // Fetch tasks for the pet
+        var tasks = _databaseService.GetTasksForPet(pet.Id);
+
+        // Assign the next task to the pet
+        pet.NextTask = tasks
+            .Where(task => task.PetId == pet.Id && !task.IsCompleted)
+            .OrderBy(task => task.DueDate)
+            .Select(task => task.TaskName)
+            .FirstOrDefault() ?? "No upcoming tasks";
+
+        return pet; // Return the modified pet
+    })];
 
         // Initialize the InsertPetCommand with the method that handles the pet insertion
         InsertPetCommand = new Command(InsertPet);
@@ -115,13 +125,4 @@ public Pet? SelectedPet
         };
         await Shell.Current.GoToAsync("profile", parameters);
     }*/
-
-    protected void SetProperty<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
-    {
-        if (!Equals(field, value))
-        {
-            field = value;
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-    }
 }

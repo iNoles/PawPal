@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using PawPal.ViewModel;
 using Plugin.LocalNotification;
 
 namespace PawPal;

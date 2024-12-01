@@ -13,6 +13,8 @@ public class Tasks
 
     public bool IsCompleted { get; set; } = false;
 
+    public string Category { get; set; } = "General"; // Category of the task
+
     [Indexed] // To improve performance of foreign key queries
     public int PetId { get; set; }
 }

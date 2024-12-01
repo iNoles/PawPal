@@ -16,6 +16,8 @@ public class Pet
     public DateTime DateOfBirth { get; set; }
 
     public string? MedicalRecords { get; set; }
+
+    public string? NextTask { get; set; } // Nullable to handle pets without tasks
     public override string ToString()
     {
         return $"{Name} ({Species}, {Breed ?? "Unknown Breed"})";

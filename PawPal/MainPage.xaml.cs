@@ -1,4 +1,6 @@
-﻿namespace PawPal;
+﻿using PawPal.ViewModel;
+
+namespace PawPal;
 
 public partial class MainPage : ContentPage
 {

@@ -1,3 +1,5 @@
+using PawPal.ViewModel;
+
 namespace PawPal;
 
 public partial class AddTaskPage : ContentPage
