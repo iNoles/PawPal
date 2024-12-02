@@ -1,3 +1,4 @@
+using PawPal.Models;
 using Plugin.LocalNotification;
 
 namespace PawPal;

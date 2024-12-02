@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using System.Windows.Input;
+using PawPal.Models;
 
 namespace PawPal.ViewModel;
 
@@ -7,7 +8,7 @@ public class AddTaskPageViewModel : BaseViewModel
 {
     private readonly DatabaseService _databaseService;
 
-    private ObservableCollection<Pet> _pets = new();
+    private ObservableCollection<Pet> _pets = [];
     public ObservableCollection<Pet> Pets
     {
         get => _pets;

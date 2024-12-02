@@ -1,4 +1,4 @@
-using System.Linq;
+using PawPal.Models;
 using SQLite;
 
 namespace PawPal;

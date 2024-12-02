@@ -1,3 +1,5 @@
+using PawPal.Models;
+
 namespace PawPal.ViewModel;
 
 public class PetProfileViewModel : BaseViewModel

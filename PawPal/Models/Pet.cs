@@ -1,6 +1,6 @@
 using SQLite;
 
-namespace PawPal;
+namespace PawPal.Models;
 
 public class Pet
 {

@@ -1,8 +1,10 @@
 using System.Collections.ObjectModel;
+using PawPal.Models;
 
 namespace PawPal.ViewModel;
 
 //TODO: Colored Indicatiors: Feeding = Green, Vet = Red, Grooming = Blue
+//TODO: Tap to View/Edit Task
 public class CalendarViewModel : BaseViewModel
 {
     private readonly DatabaseService _databaseService;

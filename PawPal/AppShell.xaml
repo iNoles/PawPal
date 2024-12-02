@@ -12,16 +12,16 @@
         ContentTemplate="{DataTemplate local:MainPage}"
         Route="MainPage" />
 
-    <!-- Add Task -->
-    <ShellContent
-        Title="Add Task"
-        ContentTemplate="{DataTemplate local:AddTaskPage}"
-        Route="AddTaskPage" />
-    
     <!-- Calendar Page -->
     <ShellContent
         Title="Calendar"
         ContentTemplate="{DataTemplate local:CalendarPage}"
         Route="calendar" />
+
+    <!-- Add Task -->
+    <ShellContent
+        Title="Add Task"
+        ContentTemplate="{DataTemplate local:AddTaskPage}"
+        Route="AddTaskPage" />
 
 </Shell>
