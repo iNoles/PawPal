@@ -3,6 +3,6 @@ namespace PawPal;
 public class CalendarDay
 {
     public DateTime Date { get; set; }
-    public bool HasTasks => Tasks.Count != 0;
-    public List<Tasks> Tasks { get; set; } = [];
+    public bool HasTasks { get; set; } // Indicates if tasks/events exist for this day
+    public bool IsCurrentMonth { get; set; } // For styling non-current month days in a grid
 }

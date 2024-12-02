@@ -1,91 +1,117 @@
 using System.Collections.ObjectModel;
-using System.Windows.Input;
 
 namespace PawPal.ViewModel;
 
+//TODO: Colored Indicatiors: Feeding = Green, Vet = Red, Grooming = Blue
 public class CalendarViewModel : BaseViewModel
 {
     private readonly DatabaseService _databaseService;
-    private ObservableCollection<CalendarDay> _calendarDays = new();
-    private CalendarDay? _selectedDay;
-    private DateTime _currentMonth = DateTime.Now;
 
-    public ObservableCollection<CalendarDay> CalendarDays
-    {
-        get => _calendarDays;
-        set => SetProperty(ref _calendarDays, value);
-    }
+    public ObservableCollection<CalendarDay> VisibleCalendarDays { get; set; } = [];
+    public string CurrentMonth => SelectedDate.ToString("MMMM yyyy");
 
-    public CalendarDay? SelectedDay
+    private DateTime _selectedDate;
+    public DateTime SelectedDate
     {
-        get => _selectedDay;
-        set => SetProperty(ref _selectedDay, value);
-    }
-
-    public DateTime CurrentMonth
-    {
-        get => _currentMonth;
+        get => _selectedDate;
         set
         {
-            SetProperty(ref _currentMonth, value);
-            LoadCalendarDays(); // Refresh days when month changes
+            _selectedDate = value;
+            OnPropertyChanged();
+            GenerateCalendar();
         }
     }
 
-    public ICommand NavigatePreviousMonthCommand { get; }
-    public ICommand NavigateNextMonthCommand { get; }
-
-    public CalendarViewModel()
+    private bool _isWeeklyView;
+    public bool IsWeeklyView
     {
-        _databaseService = new DatabaseService();
-
-        NavigatePreviousMonthCommand = new Command(() =>
+        get => _isWeeklyView;
+        set
         {
-            CurrentMonth = CurrentMonth.AddMonths(-1);
-        });
-
-        NavigateNextMonthCommand = new Command(() =>
-        {
-            CurrentMonth = CurrentMonth.AddMonths(1);
-        });
-
-        LoadCalendarDays();
+            _isWeeklyView = value;
+            OnPropertyChanged();
+            GenerateCalendar();
+        }
     }
 
-    private void LoadCalendarDays()
+    public Command ToggleViewCommand { get; }
+    public Command NavigatePreviousCommand { get; }
+    public Command NavigateNextCommand { get; }
+
+    public CalendarViewModel(DatabaseService databaseService)
     {
-        CalendarDays.Clear();
+        _databaseService = databaseService;
+        SelectedDate = DateTime.Today;
+        ToggleViewCommand = new Command(() => IsWeeklyView = !IsWeeklyView);
+        NavigatePreviousCommand = new Command(() => ChangeDate(-1));
+        NavigateNextCommand = new Command(() => ChangeDate(1));
 
-        var firstDayOfMonth = new DateTime(CurrentMonth.Year, CurrentMonth.Month, 1);
-        var startOffset = (int)firstDayOfMonth.DayOfWeek;
-        var daysInMonth = DateTime.DaysInMonth(CurrentMonth.Year, CurrentMonth.Month);
+        GenerateCalendar();
+    }
 
-        var tasksForMonth = _databaseService.GetTasksForMonth(CurrentMonth);
+    private void ChangeDate(int offset)
+    {
+        SelectedDate = IsWeeklyView ? SelectedDate.AddDays(offset * 7) : SelectedDate.AddMonths(offset);
+    }
 
-        for (int i = 0; i < startOffset; i++)
+    private void GenerateCalendar()
+    {
+        VisibleCalendarDays.Clear();
+        if (IsWeeklyView)
         {
-            CalendarDays.Add(new CalendarDay { Date = firstDayOfMonth.AddDays(-startOffset + i) });
+            foreach (var day in GenerateWeeklyCalendarDays())
+                VisibleCalendarDays.Add(day);
         }
-
-        for (int day = 1; day <= daysInMonth; day++)
+        else
         {
-            var date = new DateTime(CurrentMonth.Year, CurrentMonth.Month, day);
-            var tasksForDay = tasksForMonth.Where(t => t.DueDate.Date == date).ToList();
+            foreach (var day in GenerateMonthlyCalendarDays())
+                VisibleCalendarDays.Add(day);
+        }
+    }
 
-            CalendarDays.Add(new CalendarDay
+    private ObservableCollection<CalendarDay> GenerateWeeklyCalendarDays()
+    {
+        var days = new ObservableCollection<CalendarDay>();
+        var startOfWeek = SelectedDate.AddDays(-(int)SelectedDate.DayOfWeek);
+        var endOfWeek = startOfWeek.AddDays(6);
+        var tasks = _databaseService.GetTasksForMonth(startOfWeek);
+
+        for (int i = 0; i < 7; i++)
+        {
+            var currentDate = startOfWeek.AddDays(i);
+            var dailyTasks = tasks.Where(t => t.DueDate.Date == currentDate).ToList();
+
+            days.Add(new CalendarDay
             {
-                Date = date,
-                Tasks = tasksForDay
+                Date = currentDate,
+                HasTasks = dailyTasks.Any(),
+                IsCurrentMonth = currentDate.Month == SelectedDate.Month,
             });
         }
-
-        var remainingDays = 7 - (CalendarDays.Count % 7);
-        if (remainingDays < 7)
-        {
-            for (int i = 0; i < remainingDays; i++)
-            {
-                CalendarDays.Add(new CalendarDay { Date = firstDayOfMonth.AddDays(daysInMonth + i) });
-            }
-        }
+        return days;
     }
+
+    private ObservableCollection<CalendarDay> GenerateMonthlyCalendarDays()
+    {
+        var days = new ObservableCollection<CalendarDay>();
+        var firstDayOfMonth = new DateTime(SelectedDate.Year, SelectedDate.Month, 1);
+        var firstDayOfGrid = firstDayOfMonth.AddDays(-(int)firstDayOfMonth.DayOfWeek);
+        var lastDayOfGrid = firstDayOfMonth.AddMonths(1).AddDays(-1).AddDays(6 - (int)firstDayOfMonth.AddMonths(1).DayOfWeek);
+
+        var tasks = _databaseService.GetTasksForMonth(SelectedDate);
+
+        for (var date = firstDayOfGrid; date <= lastDayOfGrid; date = date.AddDays(1))
+        {
+            var dailyTasks = tasks.Where(t => t.DueDate.Date == date).ToList();
+
+            days.Add(new CalendarDay
+            {
+                Date = date,
+                HasTasks = dailyTasks.Any(),
+                IsCurrentMonth = date.Month == SelectedDate.Month,
+            });
+        }
+        return days;
+    }
+
 }

@@ -12,11 +12,6 @@
         ContentTemplate="{DataTemplate local:MainPage}"
         Route="MainPage" />
 
-    <ShellContent
-        Title="Pet Profile"
-        Route="profile"
-        ContentTemplate="{DataTemplate local:PetProfilePage}" />
-
     <!-- Add Task -->
     <ShellContent
         Title="Add Task"

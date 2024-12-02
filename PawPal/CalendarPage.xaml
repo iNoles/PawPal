@@ -6,78 +6,49 @@
              x:Class="PawPal.CalendarPage"
              x:DataType="vm:CalendarViewModel"
              Title="Calendar">
-    <StackLayout Padding="10">
-        <!-- Month Navigation -->
-        <Grid ColumnSpacing="10" RowSpacing="0" HorizontalOptions="Center" Margin="0,10">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-            
-            <!-- Previous Month Button -->
-            <Button Text="◀" Command="{Binding NavigatePreviousMonthCommand}" Grid.Row="0" Grid.Column="0" HorizontalOptions="Start" />
-            
-            <!-- Current Month Label (centered) -->
-            <Label Text="{Binding CurrentMonth, StringFormat='{0:MMMM yyyy}'}" Grid.Row="0" Grid.Column="1" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center" />
-            
-            <!-- Next Month Button -->
-            <Button Text="▶" Command="{Binding NavigateNextMonthCommand}" Grid.Row="0" Grid.Column="2" HorizontalOptions="End" />
+
+    <ContentPage.Resources>
+        <!-- Define converters with x:Key -->
+        <ResourceDictionary>
+            <local:BoolToViewConverter x:Key="BoolToViewConverter" />
+            <!-- Add other converters or resources as needed -->
+            <local:BoolToSpanConverter x:Key="BoolToSpanConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid Padding="10" RowDefinitions="Auto, Auto, *">
+        <!-- Header -->
+        <Grid ColumnDefinitions="Auto, *, Auto" Margin="0,10">
+            <Button Text="◀" Command="{Binding NavigatePreviousCommand}" />
+            <Label Text="{Binding CurrentMonth}" 
+                   FontAttributes="Bold" 
+                   HorizontalTextAlignment="Center" 
+                   Grid.Column="1" />
+            <Button Text="▶" Command="{Binding NavigateNextCommand}" Grid.Column="2" />
         </Grid>
+
+        <!-- Toggle View -->
+        <Button Text="{Binding IsWeeklyView, Converter={StaticResource BoolToViewConverter}}" 
+                Command="{Binding ToggleViewCommand}" 
+                Grid.Row="1" 
+                Margin="0,10" />
 
         <!-- Calendar Grid -->
-        <Grid RowSpacing="1" ColumnSpacing="1">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
-
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-
-            <!-- Day of the Week Labels (Sun, Mon, etc.) -->
-            <Label Grid.Row="0" Grid.Column="0" Text="Sun" HorizontalOptions="Center" />
-            <Label Grid.Row="0" Grid.Column="1" Text="Mon" HorizontalOptions="Center" />
-            <Label Grid.Row="0" Grid.Column="2" Text="Tue" HorizontalOptions="Center" />
-            <Label Grid.Row="0" Grid.Column="3" Text="Wed" HorizontalOptions="Center" />
-            <Label Grid.Row="0" Grid.Column="4" Text="Thu" HorizontalOptions="Center" />
-            <Label Grid.Row="0" Grid.Column="5" Text="Fri" HorizontalOptions="Center" />
-            <Label Grid.Row="0" Grid.Column="6" Text="Sat" HorizontalOptions="Center" />
-
-            <!-- Calendar Days -->
-            <Label Grid.Row="1" Grid.Column="0" Text="{Binding CalendarDays[0].Date.Day}" HorizontalOptions="Center" />
-            <Label Grid.Row="1" Grid.Column="1" Text="{Binding CalendarDays[1].Date.Day}" HorizontalOptions="Center" />
-            <Label Grid.Row="1" Grid.Column="2" Text="{Binding CalendarDays[2].Date.Day}" HorizontalOptions="Center" />
-            <Label Grid.Row="1" Grid.Column="3" Text="{Binding CalendarDays[3].Date.Day}" HorizontalOptions="Center" />
-            <Label Grid.Row="1" Grid.Column="4" Text="{Binding CalendarDays[4].Date.Day}" HorizontalOptions="Center" />
-            <Label Grid.Row="1" Grid.Column="5" Text="{Binding CalendarDays[5].Date.Day}" HorizontalOptions="Center" />
-            <Label Grid.Row="1" Grid.Column="6" Text="{Binding CalendarDays[6].Date.Day}" HorizontalOptions="Center" />
-        </Grid>
-
-        <!-- Tasks for Selected Day -->
-        <CollectionView ItemsSource="{Binding SelectedDay.Tasks}" Margin="0,10">
+        <CollectionView Grid.Row="2"
+                        ItemsSource="{Binding VisibleCalendarDays}">
+            <CollectionView.ItemsLayout>
+                <GridItemsLayout Orientation="Vertical" 
+                                  Span="{Binding IsWeeklyView, Converter={StaticResource BoolToSpanConverter}}" />
+            </CollectionView.ItemsLayout>
             <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="local:Tasks">
+                <DataTemplate x:DataType="local:CalendarDay">
                     <Grid Padding="5">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <Label Grid.Column="0" Text="{Binding TaskName}" VerticalOptions="Center" />
-                        <Label Grid.Column="1" Text="{Binding DueDate, StringFormat='{0:t}'}" HorizontalOptions="End" VerticalOptions="Center" />
+                        <Label Text="{Binding Date.Day}" 
+                               HorizontalTextAlignment="Center" />
+                        <BoxView Color="LightGray" HeightRequest="1" Margin="0,5,0,0" />
                     </Grid>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
-    </StackLayout>
+    </Grid>
 </ContentPage>
