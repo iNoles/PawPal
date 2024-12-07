@@ -1,13 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:local="clr-namespace:PawPal"
+             xmlns:local="clr-namespace:PawPal.Models"
              xmlns:vm="clr-namespace:PawPal.ViewModel"
              x:Class="PawPal.MainPage"
              x:DataType="vm:MainPageViewModel"
              Title="Pet Care Organizer">
 
-    <ContentPage.Content>
+     <ContentPage.BindingContext>
+        <vm:MainPageViewModel />
+    </ContentPage.BindingContext>
+    
+    <ScrollView>
         <Grid RowDefinitions="Auto, Auto, *, Auto" Padding="10" RowSpacing="10">
             <!-- Header -->
             <Label Text="🐾 My Pets" 
@@ -46,8 +50,12 @@
                                 <VerticalStackLayout>
                                     <Label Text="{Binding Name}" FontAttributes="Bold" />
                                     <Label Text="{Binding Species}" FontSize="14" TextColor="Gray" />
-                                    <Label Text="Next Task: {Binding NextTask}" FontSize="12" TextColor="DarkGray" /> 
                                 </VerticalStackLayout>
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:MainViewModel}}, Path=ViewDetailsCommand}"
+                                        CommandParameter="{Binding}" />
+                                </Border.GestureRecognizers>
                             </Border>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
@@ -67,9 +75,8 @@
                                     <RoundRectangle CornerRadius="8" />
                                 </Border.StrokeShape>
                                 <VerticalStackLayout>
-                                    <Label Text="{Binding TaskName}" FontAttributes="Bold" />
+                                    <Label Text="Task Name: {Binding TaskName}" FontAttributes="Bold" />
                                     <Label Text="{Binding DueDate, StringFormat='Due: {0:MMM dd, yyyy}'}" FontSize="12" TextColor="Gray" />
-                                    <CheckBox IsChecked="{Binding IsCompleted}" />
                                 </VerticalStackLayout>
                             </Border>
                         </DataTemplate>
@@ -77,5 +84,5 @@
                 </CollectionView>
             </VerticalStackLayout>
         </Grid>
-    </ContentPage.Content>
+    </ScrollView>
 </ContentPage>

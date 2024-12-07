@@ -7,8 +7,6 @@ namespace PawPal.ViewModel;
 public class MainPageViewModel : BaseViewModel
 {
     private readonly DatabaseService _databaseService;
-    private ObservableCollection<Pet> _pets = [];
-    private ObservableCollection<Tasks> _upcomingTasks = [];
 
     private Pet? _selectedPet;
 
@@ -33,12 +31,14 @@ public class MainPageViewModel : BaseViewModel
         set => SetProperty(ref _newPetDateOfBirth, value);
     }
 
+    private ObservableCollection<Pet> _pets = [];
     public ObservableCollection<Pet> Pets
     {
         get => _pets;
         set => SetProperty(ref _pets, value);
     }
 
+    private ObservableCollection<Tasks> _upcomingTasks = [];
     public ObservableCollection<Tasks> UpcomingTasks
     {
         get => _upcomingTasks;
@@ -60,27 +60,16 @@ public class MainPageViewModel : BaseViewModel
 
     // Command for inserting a new pet
     public ICommand InsertPetCommand { get; }
+    public ICommand ViewDetailsCommand { get; }
 
     public MainPageViewModel()
     {
         _databaseService = new DatabaseService();
-        Pets = [.. _databaseService.GetPets().Select(pet =>
-    {
-        // Fetch tasks for the pet
-        var tasks = _databaseService.GetTasksForPet(pet.Id);
-
-        // Assign the next task to the pet
-        pet.NextTask = tasks
-            .Where(task => task.PetId == pet.Id && !task.IsCompleted)
-            .OrderBy(task => task.DueDate)
-            .Select(task => task.TaskName)
-            .FirstOrDefault() ?? "No upcoming tasks";
-
-        return pet; // Return the modified pet
-    })];
+        Pets = [.. _databaseService.GetPets()];
 
         // Initialize the InsertPetCommand with the method that handles the pet insertion
         InsertPetCommand = new Command(InsertPet);
+        ViewDetailsCommand = new Command<Pet>(ViewDetails);
     }
 
     private void LoadTasksForSelectedPet(int petId)
@@ -89,7 +78,7 @@ public class MainPageViewModel : BaseViewModel
         var tasks = _databaseService.GetTasksForPet(petId);
 
         // Filter tasks that are not completed and sort by due date
-        UpcomingTasks = [.. tasks.Where(t => !t.IsCompleted).OrderBy(t => t.DueDate)];
+        UpcomingTasks = [.. tasks.Where(t => !t.IsCompleted).OrderBy(t => t.ScheduledDate)];
     }
 
     private void InsertPet()
@@ -113,16 +102,15 @@ public class MainPageViewModel : BaseViewModel
         NewPetDateOfBirth = DateTime.Now;
     }
 
-    /*private async static void NavigateToProfile(Pet pet)
+    private async void ViewDetails(Pet pet)
     {
-        Dictionary<string, object> parameters = new() {
-            { "id", pet.Id },
-            { "name", pet.Name },
-            { "species", pet.Species},
-            { "breed", pet.Breed ?? string.Empty},
-            { "birthDate", pet.DateOfBirth},
-            { "medical", pet.MedicalRecords ?? string.Empty}
-        };
-        await Shell.Current.GoToAsync("profile", parameters);
-    }*/
+        // Navigate to the PetDetailsPage with the selected pet's ID
+        if (pet != null)
+        {
+            await Shell.Current.GoToAsync($"petdetails", new Dictionary<string, object>
+            {
+                [nameof(Pet)] = pet
+            });
+        }
+    }
 }

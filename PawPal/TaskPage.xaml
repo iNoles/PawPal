@@ -1,0 +1,37 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:PawPal.ViewModel"
+             x:Class="PawPal.TaskPage"
+             Title="Add/Edit Task"
+             x:DataType="vm:TaskPageViewModel">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="15">
+            <!-- Task Type -->
+            <Label Text="Task Type" FontAttributes="Bold" />
+            <Picker Title="Select Task Type"
+                    ItemsSource="{Binding TaskTypes}"
+                    SelectedItem="{Binding SelectedTaskType}" />
+
+            <!-- Date and Time -->
+            <Label Text="Date &amp; Time" FontAttributes="Bold" />
+            <DatePicker Date="{Binding TaskDate}" />
+            <TimePicker Time="{Binding TaskTime}" />
+
+            <!-- Notes -->
+            <Label Text="Notes" FontAttributes="Bold" />
+            <Editor Placeholder="Add any additional details"
+                    AutoSize="TextChanges"
+                    Text="{Binding Notes}" />
+
+            <!-- Is Completed -->
+            <Label Text="Completed?" FontAttributes="Bold" />
+            <CheckBox IsChecked="{Binding IsCompleted}" />
+
+            <!-- Save Button -->
+            <Button Text="Save Task"
+                    Command="{Binding SaveTaskCommand}"
+                    IsEnabled="{Binding CanSave}" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

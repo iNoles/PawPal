@@ -2,6 +2,7 @@ using SQLite;
 
 namespace PawPal.Models;
 
+//TODO: photo
 public class Pet
 {
     [PrimaryKey, AutoIncrement]
@@ -17,9 +18,12 @@ public class Pet
 
     public string? MedicalRecords { get; set; }
 
+    public int Age { get; set; }
+
     public string? NextTask { get; set; } // Nullable to handle pets without tasks
+    
     public override string ToString()
     {
-        return $"{Name} ({Species}, {Breed ?? "Unknown Breed"})";
+        return $"{Name} ({Species}, {Age}, {Breed ?? "Unknown Breed"})";
     }
 }

@@ -1,0 +1,57 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:PawPal.Models"
+             x:Class="PawPal.PetDetailsPage"
+             Title="{Binding SelectedPet.Name}">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="15">
+
+            <!-- Pet Profile Info -->
+            <Border Stroke="Gray" StrokeThickness="1" BackgroundColor="LightGray" Padding="10">
+                <Border.Clip>
+                    <RoundRectangleGeometry CornerRadius="10" Rect="0,0,300,150" />
+                </Border.Clip>
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Pet Profile" FontSize="Medium" FontAttributes="Bold" />
+                    <Label Text="{Binding SelectedPet.Name}" FontSize="Large" />
+                    <Label Text="{Binding SelectedPet.Species}" />
+                    <Label Text="{Binding SelectedPet.Age}" />
+                    <Label Text="{Binding SelectedPet.Breed}" />
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- Schedule List -->
+            <Border Stroke="Gray" StrokeThickness="1" BackgroundColor="LightGray" Padding="10">
+                <Border.Clip>
+                    <RoundRectangleGeometry CornerRadius="10" Rect="0,0,300,150" />
+                </Border.Clip>
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Upcoming Tasks" FontSize="Medium" FontAttributes="Bold" />
+                    <CollectionView ItemsSource="{Binding UpcomingTasks}">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="local:Tasks"> 
+                                <Border Stroke="Gray" StrokeThickness="1" Padding="10">
+                                    <Border.Clip>
+                                        <RoundRectangleGeometry CornerRadius="5" Rect="0,0,300,50" />
+                                    </Border.Clip>
+                                    <VerticalStackLayout>
+                                        <Label Text="{Binding TaskName}" FontAttributes="Bold" />
+                                        <Label Text="{Binding DueDate, StringFormat='Due: {0:MMMM dd, yyyy}'}" />
+                                    </VerticalStackLayout>
+                                </Border>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- Action Buttons -->
+            <HorizontalStackLayout Spacing="15" HorizontalOptions="Center">
+                <Button Text="Edit Profile" Command="{Binding EditProfileCommand}" />
+                <!--Button Text="Medical Records" Command="{Binding ViewMedicalRecordsCommand}" />-->
+            </HorizontalStackLayout>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

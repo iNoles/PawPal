@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="PawPal.EditProfilePage"
+             Title="Edit Profile">
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="15">
+            <Entry Text="{Binding SelectedPet.Name}" Placeholder="Name" />
+            <Entry Text="{Binding SelectedPet.Species}" Placeholder="Species" />
+            <Entry Text="{Binding SelectedPet.Age}" Placeholder="Age" Keyboard="Numeric" />
+            <Entry Text="{Binding SelectedPet.Breed}" Placeholder="Breed" />
+
+            <Button Text="Save" Command="{Binding SaveCommand}" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

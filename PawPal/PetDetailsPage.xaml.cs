@@ -2,9 +2,9 @@ using PawPal.ViewModel;
 
 namespace PawPal;
 
-public partial class CalendarPage : ContentPage
+public partial class PetDetailsPage : ContentPage
 {
-	public CalendarPage(CalendarViewModel viewModel)
+	public PetDetailsPage(PetDetailsViewModel viewModel)
 	{
 		InitializeComponent();
 		BindingContext = viewModel;

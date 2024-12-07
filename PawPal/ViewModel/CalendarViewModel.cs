@@ -81,7 +81,7 @@ public class CalendarViewModel : BaseViewModel
         for (int i = 0; i < 7; i++)
         {
             var currentDate = startOfWeek.AddDays(i);
-            var dailyTasks = tasks.Where(t => t.DueDate.Date == currentDate).ToList();
+            var dailyTasks = tasks.Where(t => t.ScheduledDate.Date == currentDate).ToList();
 
             days.Add(new CalendarDay
             {
@@ -104,12 +104,12 @@ public class CalendarViewModel : BaseViewModel
 
         for (var date = firstDayOfGrid; date <= lastDayOfGrid; date = date.AddDays(1))
         {
-            var dailyTasks = tasks.Where(t => t.DueDate.Date == date).ToList();
+            var dailyTasks = tasks.Where(t => t.ScheduledDate.Date == date).ToList();
 
             days.Add(new CalendarDay
             {
                 Date = date,
-                HasTasks = dailyTasks.Any(),
+                HasTasks = dailyTasks.Count != 0,
                 IsCurrentMonth = date.Month == SelectedDate.Month,
             });
         }

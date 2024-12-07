@@ -2,6 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:PawPal"
+             xmlns:model="clr-namespace:PawPal.Models"
              xmlns:vm="clr-namespace:PawPal.ViewModel"
              x:Class="PawPal.CalendarPage"
              x:DataType="vm:CalendarViewModel"
@@ -41,7 +42,7 @@
                                   Span="{Binding IsWeeklyView, Converter={StaticResource BoolToSpanConverter}}" />
             </CollectionView.ItemsLayout>
             <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="local:CalendarDay">
+                <DataTemplate x:DataType="model:CalendarDay">
                     <Grid Padding="5">
                         <Label Text="{Binding Date.Day}" 
                                HorizontalTextAlignment="Center" />

@@ -4,24 +4,18 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:PawPal"
-    Shell.FlyoutBehavior="Flyout"
     Title="PawPal">
 
-    <ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
-
-    <!-- Calendar Page -->
-    <ShellContent
-        Title="Calendar"
-        ContentTemplate="{DataTemplate local:CalendarPage}"
-        Route="calendar" />
-
-    <!-- Add Task -->
-    <ShellContent
-        Title="Add Task"
-        ContentTemplate="{DataTemplate local:AddTaskPage}"
-        Route="AddTaskPage" />
-
+    <!-- TabBar for the main tabs -->
+    <TabBar>
+        <!-- Home Tab -->
+        <ShellContent Title="Home"
+                      ContentTemplate="{DataTemplate local:MainPage}" />
+        <!-- Calendar Tab -->
+        <ShellContent Title="Calendar"
+                      ContentTemplate="{DataTemplate local:CalendarPage}" />
+        <!-- Add Task Tab -->
+        <ShellContent Title="Add Task"
+                      ContentTemplate="{DataTemplate local:TaskPage}" />
+    </TabBar>
 </Shell>
