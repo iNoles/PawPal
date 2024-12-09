@@ -9,6 +9,9 @@ public class TaskPageViewModel : BaseViewModel
     private readonly DatabaseService _databaseService;
     private readonly bool _isEditMode;
 
+    private int _selectedPetId;
+    private List<Pet> _pets = [];
+
     public ObservableCollection<string> TaskTypes { get; } =
     [
         "Feeding", "Grooming", "Vet Appointment", "Exercise", "Other"
@@ -50,11 +53,24 @@ public class TaskPageViewModel : BaseViewModel
         set => SetProperty(ref _isCompleted, value);
     }
 
+    public int SelectedPetId
+    {
+        get => _selectedPetId;
+        set => SetProperty(ref _selectedPetId, value);
+    }
+
+    // List of pets (you should populate this with actual pets in your application)
+    public List<Pet> Pets
+    {
+        get => _pets;
+        set => SetProperty(ref _pets, value);
+    }
+
     // Command for saving the task
     public ICommand SaveTaskCommand { get; }
 
     // Validation property to enable the Save button
-    public bool CanSave => !string.IsNullOrWhiteSpace(SelectedTaskType);
+    public bool CanSave => !string.IsNullOrWhiteSpace(SelectedTaskType) && SelectedPetId != 0;
 
     // Constructor
     public TaskPageViewModel(DatabaseService databaseService, Tasks? existingTask = null)
@@ -70,13 +86,14 @@ public class TaskPageViewModel : BaseViewModel
             TaskTime = existingTask.ScheduledDate.TimeOfDay;
             Notes = existingTask.Notes;
             IsCompleted = existingTask.IsCompleted;
+            SelectedPetId = existingTask.PetId;
         }
 
-        SaveTaskCommand = new Command(SaveTask, () => CanSave);
+        SaveTaskCommand = new Command(async () => await SaveTask(), () => CanSave);
         PropertyChanged += (_, __) => ((Command)SaveTaskCommand).ChangeCanExecute();
     }
 
-    private async void SaveTask()
+    private async Task SaveTask()
     {
         // Combine date and time
         var scheduledDateTime = TaskDate.Add(TaskTime);
@@ -86,8 +103,11 @@ public class TaskPageViewModel : BaseViewModel
             Title = SelectedTaskType ?? "Task",
             ScheduledDate = scheduledDateTime,
             Notes = Notes,
-            IsCompleted = false
+            IsCompleted = false,
+            PetId = SelectedPetId
         };
+
+        await NotificationService.ScheduleNotificationAsync(task);
 
         if (_isEditMode)
         {

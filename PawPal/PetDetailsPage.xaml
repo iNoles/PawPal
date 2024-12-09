@@ -1,7 +1,9 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:PawPal.Models"
+             xmlns:vm="clr-namespace:PawPal.ViewModel"
              x:Class="PawPal.PetDetailsPage"
+             x:DataType="vm:PetDetailsViewModel"
              Title="{Binding SelectedPet.Name}">
 
     <ScrollView>
@@ -36,8 +38,8 @@
                                         <RoundRectangleGeometry CornerRadius="5" Rect="0,0,300,50" />
                                     </Border.Clip>
                                     <VerticalStackLayout>
-                                        <Label Text="{Binding TaskName}" FontAttributes="Bold" />
-                                        <Label Text="{Binding DueDate, StringFormat='Due: {0:MMMM dd, yyyy}'}" />
+                                        <Label Text="{Binding Title}" FontAttributes="Bold" />
+                                        <Label Text="{Binding ScheduledDate, StringFormat='Due: {0:MMMM dd, yyyy}'}" />
                                     </VerticalStackLayout>
                                 </Border>
                             </DataTemplate>

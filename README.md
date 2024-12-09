@@ -11,7 +11,8 @@ PawPal is a mobile application built using .NET MAUI designed to help pet owners
 
 ## Screenshots
 
-![Home Screen](screenshot/maui-desktop.png)
+![Home Screen](screenshot/home.png)
+![Task Screen](screenshot/tasks.png)
 
 ## Technologies Used
 

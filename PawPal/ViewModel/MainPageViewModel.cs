@@ -60,7 +60,7 @@ public class MainPageViewModel : BaseViewModel
 
     // Command for inserting a new pet
     public ICommand InsertPetCommand { get; }
-    public ICommand ViewDetailsCommand { get; }
+    public ICommand PetTappedCommand { get; }
 
     public MainPageViewModel()
     {
@@ -69,7 +69,7 @@ public class MainPageViewModel : BaseViewModel
 
         // Initialize the InsertPetCommand with the method that handles the pet insertion
         InsertPetCommand = new Command(InsertPet);
-        ViewDetailsCommand = new Command<Pet>(ViewDetails);
+        PetTappedCommand = new Command<Pet>(OnPetTapped);
     }
 
     private void LoadTasksForSelectedPet(int petId)
@@ -102,7 +102,7 @@ public class MainPageViewModel : BaseViewModel
         NewPetDateOfBirth = DateTime.Now;
     }
 
-    private async void ViewDetails(Pet pet)
+    private async void OnPetTapped(Pet pet)
     {
         // Navigate to the PetDetailsPage with the selected pet's ID
         if (pet != null)

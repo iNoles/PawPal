@@ -20,17 +20,17 @@ public class NotificationService
 
     public static async Task ScheduleNotificationAsync(Tasks task)
     {
-        if (task.DueDate > DateTime.Now) // Only schedule for future dates
+        if (task.ScheduledDate > DateTime.Now) // Only schedule for future dates
         {
             var notification = new NotificationRequest
             {
                 NotificationId = task.Id, // Unique ID for the task
                 Title = "Task Reminder",
-                Description = $"Task '{task.TaskName}' is due soon!",
+                Description = $"Task '{task.Title}' is due soon!",
                 ReturningData = $"TaskId:{task.Id}",
                 Schedule =
                 {
-                    NotifyTime = task.DueDate // Schedule for the task's due date
+                    NotifyTime = task.ScheduledDate // Schedule for the task's due date
                 }
             };
 

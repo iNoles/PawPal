@@ -6,10 +6,6 @@
              x:Class="PawPal.MainPage"
              x:DataType="vm:MainPageViewModel"
              Title="Pet Care Organizer">
-
-     <ContentPage.BindingContext>
-        <vm:MainPageViewModel />
-    </ContentPage.BindingContext>
     
     <ScrollView>
         <Grid RowDefinitions="Auto, Auto, *, Auto" Padding="10" RowSpacing="10">
@@ -33,34 +29,28 @@
                 <Button Text="Add Pet" Command="{Binding InsertPetCommand}" />
             </VerticalStackLayout>
 
-            <!-- View Pets Section -->
-            <VerticalStackLayout Grid.Row="2" Padding="5" Spacing="5">
-                <Label Text="View Pets" 
-                       FontSize="18" 
-                       FontAttributes="Bold"
-                       HorizontalOptions="Start" />
-
-                <CollectionView ItemsSource="{Binding Pets}" SelectionMode="Single" SelectedItem="{Binding SelectedPet, Mode=TwoWay}">
-                    <CollectionView.ItemTemplate>
-                        <DataTemplate x:DataType="local:Pet">
-                            <Border Margin="5" Stroke="Gray" StrokeThickness="1" Padding="10">
-                                <Border.StrokeShape>
-                                    <RoundRectangle CornerRadius="8" />
-                                </Border.StrokeShape>
-                                <VerticalStackLayout>
-                                    <Label Text="{Binding Name}" FontAttributes="Bold" />
-                                    <Label Text="{Binding Species}" FontSize="14" TextColor="Gray" />
-                                </VerticalStackLayout>
-                                <Border.GestureRecognizers>
-                                    <TapGestureRecognizer
-                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:MainViewModel}}, Path=ViewDetailsCommand}"
-                                        CommandParameter="{Binding}" />
-                                </Border.GestureRecognizers>
-                            </Border>
-                        </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                </CollectionView>
-            </VerticalStackLayout>
+           <!-- View Pets Section -->
+           <CollectionView ItemsSource="{Binding Pets}" SelectionMode="Single" SelectedItem="{Binding SelectedPet, Mode=TwoWay}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="local:Pet">
+                    <Border Margin="5" Stroke="Gray" StrokeThickness="1" Padding="10">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="8" />
+                        </Border.StrokeShape>
+                        <VerticalStackLayout>
+                            <Label Text="{Binding Name}" FontAttributes="Bold" />
+                            <Label Text="{Binding Species}" FontSize="14" TextColor="Gray" />
+                        </VerticalStackLayout>
+                        <!-- Tap Gesture Recognizer -->
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:MainPageViewModel}}, Path=PetTappedCommand}"
+                                CommandParameter="{Binding .}" />
+                        </Border.GestureRecognizers>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
 
             <VerticalStackLayout Grid.Row="3" Padding="5" Spacing="5">
                 <Label Text="Upcoming Tasks"
@@ -75,8 +65,8 @@
                                     <RoundRectangle CornerRadius="8" />
                                 </Border.StrokeShape>
                                 <VerticalStackLayout>
-                                    <Label Text="Task Name: {Binding TaskName}" FontAttributes="Bold" />
-                                    <Label Text="{Binding DueDate, StringFormat='Due: {0:MMM dd, yyyy}'}" FontSize="12" TextColor="Gray" />
+                                    <Label Text="Task Name: {Binding Title}" FontAttributes="Bold" />
+                                    <Label Text="{Binding ScheduledDate, StringFormat='Due: {0:MMM dd, yyyy}'}" FontSize="12" TextColor="Gray" />
                                 </VerticalStackLayout>
                             </Border>
                         </DataTemplate>

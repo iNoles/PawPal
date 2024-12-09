@@ -6,7 +6,7 @@ namespace PawPal.ViewModel;
 public class EditProfileViewModel : BaseViewModel
 {
     private readonly DatabaseService _databaseService;
-    public readonly Pet SelectedPet;
+    public Pet SelectedPet { get; private set; }
 
     public ICommand SaveCommand { get; }
 

@@ -6,7 +6,13 @@
              x:DataType="vm:TaskPageViewModel">
 
     <ScrollView>
-        <VerticalStackLayout Padding="20" Spacing="15">
+        <VerticalStackLayout Padding="10" Spacing="15">
+                <!-- Pet Assignment -->
+                <Label Text="Assign Pet" FontAttributes="Bold" />
+                <Picker Title="Select Pet"
+                        ItemsSource="{Binding Pets}"
+                        SelectedItem="{Binding SelectedPetId}" />
+
             <!-- Task Type -->
             <Label Text="Task Type" FontAttributes="Bold" />
             <Picker Title="Select Task Type"
@@ -25,8 +31,10 @@
                     Text="{Binding Notes}" />
 
             <!-- Is Completed -->
-            <Label Text="Completed?" FontAttributes="Bold" />
-            <CheckBox IsChecked="{Binding IsCompleted}" />
+             <HorizontalStackLayout Spacing="10">
+                <Label Text="Completed?" FontAttributes="Bold" VerticalOptions="Center" />
+                <CheckBox IsChecked="{Binding IsCompleted}" VerticalOptions="Center" />
+            </HorizontalStackLayout>
 
             <!-- Save Button -->
             <Button Text="Save Task"

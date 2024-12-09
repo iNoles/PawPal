@@ -27,13 +27,14 @@ public static class MauiProgram
 		}
 
 		// Register ViewModel
+		builder.Services.AddTransient<MainPageViewModel>();
 		builder.Services.AddTransient<CalendarViewModel>();
 		builder.Services.AddTransient<PetDetailsViewModel>();
 
 #if DEBUG
         builder.Logging.AddDebug(); // Adds debug logging in debug builds
 #else
-        builder.Logging.AddConsole(); // Optionally add console logging for other environments
+		builder.Logging.AddConsole(); // Optionally add console logging for other environments
 #endif
 
 		return builder.Build();
