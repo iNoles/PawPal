@@ -51,7 +51,7 @@
             <!-- Action Buttons -->
             <HorizontalStackLayout Spacing="15" HorizontalOptions="Center">
                 <Button Text="Edit Profile" Command="{Binding EditProfileCommand}" />
-                <!--Button Text="Medical Records" Command="{Binding ViewMedicalRecordsCommand}" />-->
+                <Button Text="Medical Records" Command="{Binding ViewMedicalRecordsCommand}" />
             </HorizontalStackLayout>
 
         </VerticalStackLayout>

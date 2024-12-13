@@ -10,6 +10,6 @@ public partial class AppShell : Shell
 		Routing.RegisterRoute(nameof(PetDetailsPage), typeof(PetDetailsPage));
 		Routing.RegisterRoute(nameof(EditProfilePage), typeof(EditProfilePage));
 		Routing.RegisterRoute("edittask", typeof(TaskPage));
-		//Routing.RegisterRoute(nameof(ViewMedicalRecordsPage), typeof(ViewMedicalRecordsPage));
+		Routing.RegisterRoute("medicalrecords", typeof(MedicalRecordsPage));
 	}
 }

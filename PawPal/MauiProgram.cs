@@ -30,6 +30,9 @@ public static class MauiProgram
 		builder.Services.AddTransient<MainPageViewModel>();
 		builder.Services.AddTransient<CalendarViewModel>();
 		builder.Services.AddTransient<PetDetailsViewModel>();
+		builder.Services.AddTransient<EditProfileViewModel>();
+		builder.Services.AddTransient<TaskPageViewModel>();
+		builder.Services.AddTransient<MedicalRecordsViewModel>();
 
 #if DEBUG
         builder.Logging.AddDebug(); // Adds debug logging in debug builds

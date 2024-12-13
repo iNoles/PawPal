@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:PawPal.ViewModel"
+             xmlns:models="clr-namespace:PawPal.Models"
+             x:Class="PawPal.MedicalRecordsPage"
+             x:DataType="vm:MedicalRecordsViewModel"
+             Title="Medical Records">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="10" Spacing="15">
+            <!-- Header -->
+            <Label Text="Medical Records"
+                   FontSize="24"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center" />
+
+            <!-- Selected Pet Info -->
+            <Label Text="Manage medical records for the selected pet."
+                   FontSize="14"
+                   TextColor="Gray"
+                   HorizontalOptions="Center" />
+
+            <!-- Medical Records List -->
+            <CollectionView ItemsSource="{Binding MedicalRecords}" 
+                            SelectedItem="{Binding SelectedMedicalRecord, Mode=TwoWay}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:MedicalRecord">
+                        <Border Stroke="Gray" StrokeThickness="1" Padding="10" Margin="5">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="8" />
+                            </Border.StrokeShape>
+                            <VerticalStackLayout>
+                                <Label Text="{Binding RecordType}" FontAttributes="Bold" />
+                                <Label Text="Date: {Binding RecordDate, StringFormat='{0:MMM dd, yyyy}'}" FontSize="12" TextColor="Gray" />
+                                <Label Text="Notes: {Binding Notes}" FontSize="12" />
+                                <Label Text="Prescriptions: {Binding Prescriptions}" FontSize="12" />
+                                <Label Text="Doctor: {Binding Doctor}" FontSize="12" TextColor="Gray" />
+                            </VerticalStackLayout>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <!-- Action Buttons -->
+            <Grid ColumnDefinitions="*, *, *" HorizontalOptions="Fill">
+                <Button Text="Add Record"
+                        Command="{Binding AddMedicalRecordCommand}" 
+                        Grid.Column="0" />
+
+                <Button Text="Update Record"
+                        Command="{Binding UpdateMedicalRecordCommand}" 
+                        Grid.Column="1"
+                        IsEnabled="{Binding SelectedMedicalRecord, Converter={StaticResource NullToBoolConverter}}" />
+
+                <Button Text="Delete Record"
+                        Command="{Binding DeleteMedicalRecordCommand}" 
+                        Grid.Column="2"
+                        IsEnabled="{Binding SelectedMedicalRecord, Converter={StaticResource NullToBoolConverter}}" />
+            </Grid>
+
+            <!-- Form for Adding/Updating Medical Records -->
+            <Border Stroke="Gray" StrokeThickness="1" StrokeShape="RoundRectangle" Padding="10" IsVisible="{Binding IsFormVisible}">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Add/Update Medical Record" FontSize="18" FontAttributes="Bold" />
+
+                    <Entry Placeholder="Record Type (e.g., Vaccination, Checkup)" 
+                           Text="{Binding EditableMedicalRecord.RecordType}" />
+
+                    <Editor Placeholder="Notes" 
+                            Text="{Binding EditableMedicalRecord.Notes}" 
+                            AutoSize="TextChanges" />
+
+                    <Entry Placeholder="Prescriptions (if any)" 
+                           Text="{Binding EditableMedicalRecord.Prescriptions}" />
+
+                    <Entry Placeholder="Doctor's Name" 
+                           Text="{Binding EditableMedicalRecord.Doctor}" />
+
+                    <DatePicker Date="{Binding EditableMedicalRecord.RecordDate}" />
+
+                    <Grid ColumnDefinitions="*, *" HorizontalOptions="Fill">
+                        <Button Text="Save" 
+                                Command="{Binding SaveMedicalRecordCommand}" 
+                                Grid.Column="0" />
+
+                        <Button Text="Cancel" 
+                                Command="{Binding CancelEditCommand}" 
+                                Grid.Column="1" />
+                    </Grid>
+                </VerticalStackLayout>
+            </Border>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

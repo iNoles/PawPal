@@ -4,14 +4,19 @@ PawPal is a mobile application built using .NET MAUI designed to help pet owners
 
 ## Features
 
-- **Add Pets**: Add new pets with their names, species, and date of birth.
-- **Manage Pet Tasks**: Assign and track tasks for each pet.
-- **Task Scheduling**: Set reminders for tasks related to pets.
-- **Notification Support**: The app uses local notifications to remind users of upcoming pet tasks by their due date.
+- **Add and Manage Pets**: Add pets with details such as name, species, and date of birth. Edit or remove pet information as needed.
+- **Task Management**: Assign and organize tasks for each pet, with options to set due dates and priorities.
+- **Task Reminders:**: Schedule reminders for pet-related tasks, ensuring you never miss an important task or event.
+- **Notification Support**: The app uses local notifications to remind users of upcoming pet tasks based on their due dates.
+- **Medical Records Management**: Record and manage pet medical history, including vaccination records, prescriptions, and notes from veterinarians.
+- **Customizable Medical Records**: Easily add, edit, or delete medical records for pets, with fields for record type, date, notes, and more.
 
 ## Screenshots
 
+Home Screen: Displays the list of pets and an overview of tasks.
 ![Home Screen](screenshot/home.png)
+
+Task Screen: Allows users to view and manage tasks assigned to each pet.
 ![Task Screen](screenshot/tasks.png)
 
 ## Technologies Used
@@ -21,6 +26,7 @@ PawPal is a mobile application built using .NET MAUI designed to help pet owners
 -  **XAML**: A declarative language for building user interfaces, primarily used with .NET-based applications.
 -  **SQLite**: A lightweight, serverless SQL database used for persisting pet and task data locally on the device.
 -  **LINQ**: Used for querying and manipulating collections of pet and task data, enabling clean and efficient operations such as sorting, filtering, and aggregating data.
+- **Visual Studio**: Recommended IDE for streamlined development and debugging with .NET MAUI.
 
 ## Getting Started
 

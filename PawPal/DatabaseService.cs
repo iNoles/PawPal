@@ -19,7 +19,7 @@ public class DatabaseService
         _database.Execute("PRAGMA foreign_keys = ON;");
 
         // Create multiple tables in a single call
-        _database.CreateTables<Pet, Tasks>();
+        _database.CreateTables<Pet, Tasks, MedicalRecord>();
     }
 
     // Insert a new pet
@@ -34,6 +34,12 @@ public class DatabaseService
         _database.Insert(tasks);
     }
 
+    // Insert a new medical record
+    public void InsertMedicalRecord(MedicalRecord record)
+    {
+        _database.Insert(record);
+    }
+
     // Update an existing pet
     public void UpdatePet(Pet pet)
     {
@@ -45,6 +51,12 @@ public class DatabaseService
     public void UpdateTask(Tasks task)
     {
         _database.Update(task);
+    }
+    
+    // Update an existing medical record
+    public void UpdateMedicalRecord(MedicalRecord record)
+    {
+        _database.Update(record);
     }
 
     // Fetch all pets
@@ -73,5 +85,33 @@ public class DatabaseService
     {
         // Fetch the pet by ID
         return _database.Table<Pet>().FirstOrDefault(p => p.Id == id);
+    }
+
+    // Fetch medical records for a specific pet
+    public List<MedicalRecord> GetMedicalRecordsForPet(int petId)
+    {
+        return [.. _database.Table<MedicalRecord>().Where(r => r.PetId == petId)];
+    }
+
+    // Fetch all medical records
+    public List<MedicalRecord> GetAllMedicalRecords()
+    {
+        return [.. _database.Table<MedicalRecord>()];
+    }
+
+    // Fetch a specific medical record by ID
+    public MedicalRecord GetMedicalRecordById(int id)
+    {
+        return _database.Table<MedicalRecord>().FirstOrDefault(r => r.Id == id);
+    }
+
+    // Delete a medical record by ID
+    public void DeleteMedicalRecord(int id)
+    {
+        var record = GetMedicalRecordById(id);
+        if (record != null)
+        {
+            _database.Delete(record);
+        }
     }
 }
