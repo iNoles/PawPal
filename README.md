@@ -11,6 +11,7 @@ PawPal is a mobile application built using .NET MAUI designed to help pet owners
 - **Notification Support**: The app uses local notifications to remind users of upcoming pet tasks based on their due dates.
 - **Medical Records Management**: Record and manage pet medical history, including vaccination records, prescriptions, and notes from veterinarians.
 - **Customizable Medical Records**: Easily add, edit, or delete medical records for pets, with fields for record type, date, notes, and more.
+- **Dark Mode**: Built-in support for Dark Mode, ensuring a visually comfortable experience in low-light conditions.
 
 ## Screenshots
 
