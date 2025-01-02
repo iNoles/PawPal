@@ -7,7 +7,7 @@ PawPal is a mobile application built using .NET MAUI designed to help pet owners
 - **Add and Manage Pets**: Add pets with details such as name, species, and date of birth. Edit or remove pet information as needed.
 - **Multi-Pet Support**: Seamlessly manage multiple pets within the app, with separate profiles and tasks for each pet.
 - **Task Management**: Assign and organize tasks for each pet, with options to set due dates and priorities.
-- **Task Reminders:**: Schedule reminders for pet-related tasks, ensuring you never miss an important task or event.
+- **Task Reminders**: Schedule reminders for pet-related tasks, ensuring you never miss an important task or event.
 - **Notification Support**: The app uses local notifications to remind users of upcoming pet tasks based on their due dates.
 - **Medical Records Management**: Record and manage pet medical history, including vaccination records, prescriptions, and notes from veterinarians.
 - **Customizable Medical Records**: Easily add, edit, or delete medical records for pets, with fields for record type, date, notes, and more.
