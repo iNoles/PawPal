@@ -1,5 +1,7 @@
 ﻿namespace PawPal;
 
+using PawPal.Views;
+
 public partial class AppShell : Shell
 {
 	public AppShell()
@@ -11,5 +13,6 @@ public partial class AppShell : Shell
 		Routing.RegisterRoute(nameof(EditProfilePage), typeof(EditProfilePage));
 		Routing.RegisterRoute("edittask", typeof(TaskPage));
 		Routing.RegisterRoute("medicalrecords", typeof(MedicalRecordsPage));
+		Routing.RegisterRoute(nameof(AddEditVetContactPage), typeof(AddEditVetContactPage));
 	}
 }

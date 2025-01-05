@@ -4,18 +4,26 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:PawPal"
+    xmlns:views="clr-namespace:PawPal.Views"
     Title="PawPal">
 
     <!-- TabBar for the main tabs -->
     <TabBar>
         <!-- Home Tab -->
-        <ShellContent Title="Home"
-                      ContentTemplate="{DataTemplate local:MainPage}" />
+        <Tab Title="Home">
+            <ShellContent Route="HomePage" ContentTemplate="{DataTemplate views:MainPage}" />
+        </Tab>
         <!-- Calendar Tab -->
-        <ShellContent Title="Calendar"
-                      ContentTemplate="{DataTemplate local:CalendarPage}" />
+        <Tab Title="Calendar">
+             <ShellContent Route="CalendarPage" ContentTemplate="{DataTemplate views:CalendarPage}" />
+        </Tab>
         <!-- Add Task Tab -->
-        <ShellContent Title="Add Task"
-                      ContentTemplate="{DataTemplate local:TaskPage}" />
+        <Tab Title="Add Task">
+             <ShellContent Route="AddTaskPage" ContentTemplate="{DataTemplate views:TaskPage}" />
+        </Tab>
+        <!-- Vet Contacts Tab -->
+        <Tab Title="Vet Contacts">
+            <ShellContent Route="VetContactsPage" ContentTemplate="{DataTemplate views:VetContactsPage}" />
+        </Tab>
     </TabBar>
 </Shell>

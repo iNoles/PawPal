@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 using PawPal.Models;
+using PawPal.Services;
 
 namespace PawPal.ViewModel;
 
@@ -111,11 +112,11 @@ public class TaskPageViewModel : BaseViewModel
 
         if (_isEditMode)
         {
-            _databaseService.UpdateTask(task);
+            await _databaseService.UpdateTaskAsync(task);
         }
         else
         {
-            _databaseService.InsertTasks(task);
+            await _databaseService.InsertTasksAsync(task);
         }
 
         // Navigate back to the previous page

@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 using PawPal.Models;
+using PawPal.Services;
 
 namespace PawPal.ViewModel;
 
@@ -74,11 +75,11 @@ public class MedicalRecordsViewModel : BaseViewModel
         SaveMedicalRecordCommand = new Command(SaveMedicalRecord);
     }
 
-    private void LoadMedicalRecords()
+    private async void LoadMedicalRecords()
     {
         if (SelectedPetId > 0)
         {
-            var records = _databaseService.GetMedicalRecordsForPet(SelectedPetId);
+            var records = await _databaseService.GetMedicalRecordsForPetAsync(SelectedPetId);
             MedicalRecords = [.. records];
         }
     }
@@ -116,12 +117,12 @@ public class MedicalRecordsViewModel : BaseViewModel
         if (EditableMedicalRecord.Id == 0)
         {
             // Add new record
-            _databaseService.InsertMedicalRecord(EditableMedicalRecord);
+            _databaseService.InsertMedicalRecordAsync(EditableMedicalRecord);
         }
         else
         {
             // Update existing record
-            _databaseService.UpdateMedicalRecord(EditableMedicalRecord);
+            _databaseService.UpdateMedicalRecordAsync(EditableMedicalRecord);
         }
 
         LoadMedicalRecords();
@@ -137,7 +138,7 @@ public class MedicalRecordsViewModel : BaseViewModel
     {
         if (SelectedMedicalRecord != null)
         {
-            _databaseService.DeleteMedicalRecord(SelectedMedicalRecord.Id);
+            _databaseService.DeleteMedicalRecordAsync(SelectedMedicalRecord);
             LoadMedicalRecords();
         }
     }

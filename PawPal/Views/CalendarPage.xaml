@@ -4,7 +4,7 @@
              xmlns:local="clr-namespace:PawPal"
              xmlns:model="clr-namespace:PawPal.Models"
              xmlns:vm="clr-namespace:PawPal.ViewModel"
-             x:Class="PawPal.CalendarPage"
+             x:Class="PawPal.Views.CalendarPage"
              x:DataType="vm:CalendarViewModel"
              Title="Calendar">
 

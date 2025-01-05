@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 using PawPal.Models;
+using PawPal.Services;
 
 namespace PawPal.ViewModel;
 
@@ -60,22 +61,26 @@ public class MainPageViewModel : BaseViewModel
 
     // Command for inserting a new pet
     public ICommand InsertPetCommand { get; }
-    public ICommand PetTappedCommand { get; }
 
-    public MainPageViewModel()
+    public MainPageViewModel(DatabaseService databaseService)
     {
-        _databaseService = new DatabaseService();
-        Pets = [.. _databaseService.GetPets()];
+        _databaseService = databaseService;
+
+        LoadPets();
 
         // Initialize the InsertPetCommand with the method that handles the pet insertion
         InsertPetCommand = new Command(InsertPet);
-        PetTappedCommand = new Command<Pet>(OnPetTapped);
     }
 
-    private void LoadTasksForSelectedPet(int petId)
+    private async void LoadPets()
+    {
+        Pets = [.. await _databaseService.GetAllPetsAsync()];
+    }
+
+    private async void LoadTasksForSelectedPet(int petId)
     {
         // Fetch tasks for the selected pet
-        var tasks = _databaseService.GetTasksForPet(petId);
+        var tasks = await _databaseService.GetTasksForPetAsync(petId);
 
         // Filter tasks that are not completed and sort by due date
         UpcomingTasks = [.. tasks.Where(t => !t.IsCompleted).OrderBy(t => t.ScheduledDate)];
@@ -90,7 +95,7 @@ public class MainPageViewModel : BaseViewModel
             DateOfBirth = NewPetDateOfBirth
         };
 
-        _databaseService.InsertPet(newPet);
+        _databaseService.InsertPetAsync(newPet);
         Pets.Add(newPet);
         ClearNewPetFields();
     }
@@ -102,7 +107,7 @@ public class MainPageViewModel : BaseViewModel
         NewPetDateOfBirth = DateTime.Now;
     }
 
-    private async void OnPetTapped(Pet pet)
+    /*private async void OnPetTapped(Pet pet)
     {
         // Navigate to the PetDetailsPage with the selected pet's ID
         if (pet != null)
@@ -112,5 +117,5 @@ public class MainPageViewModel : BaseViewModel
                 [nameof(Pet)] = pet
             });
         }
-    }
+    }*/
 }

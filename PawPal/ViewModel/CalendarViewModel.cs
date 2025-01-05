@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using PawPal.Models;
+using PawPal.Services;
 
 namespace PawPal.ViewModel;
 
@@ -76,7 +77,7 @@ public class CalendarViewModel : BaseViewModel
         var days = new ObservableCollection<CalendarDay>();
         var startOfWeek = SelectedDate.AddDays(-(int)SelectedDate.DayOfWeek);
         var endOfWeek = startOfWeek.AddDays(6);
-        var tasks = _databaseService.GetTasksForMonth(startOfWeek);
+        var tasks = _databaseService.GetTasksForMonthAsync(startOfWeek);
 
         for (int i = 0; i < 7; i++)
         {
@@ -100,7 +101,7 @@ public class CalendarViewModel : BaseViewModel
         var firstDayOfGrid = firstDayOfMonth.AddDays(-(int)firstDayOfMonth.DayOfWeek);
         var lastDayOfGrid = firstDayOfMonth.AddMonths(1).AddDays(-1).AddDays(6 - (int)firstDayOfMonth.AddMonths(1).DayOfWeek);
 
-        var tasks = _databaseService.GetTasksForMonth(SelectedDate);
+        var tasks = _databaseService.GetTasksForMonthAsync(SelectedDate);
 
         for (var date = firstDayOfGrid; date <= lastDayOfGrid; date = date.AddDays(1))
         {

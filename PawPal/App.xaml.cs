@@ -1,4 +1,6 @@
-﻿namespace PawPal;
+﻿using PawPal.Services;
+
+namespace PawPal;
 
 public partial class App : Application
 {

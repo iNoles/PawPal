@@ -1,5 +1,6 @@
 using System.Windows.Input;
 using PawPal.Models;
+using PawPal.Services;
 
 namespace PawPal.ViewModel;
 
@@ -10,17 +11,22 @@ public class EditProfileViewModel : BaseViewModel
 
     public ICommand SaveCommand { get; }
 
-    public EditProfileViewModel(int petId)
+    public EditProfileViewModel(DatabaseService databaseService, int petId)
     {
-        _databaseService = new DatabaseService();
-        SelectedPet = _databaseService.GetPetById(petId);
+        _databaseService = databaseService;
+        LoadPets(petId);
 
         SaveCommand = new Command(Save);
     }
 
+    private async void LoadPets(int petId)
+    {
+        SelectedPet = await _databaseService.GetPetByIdAsync(petId);
+    }
+
     private async void Save()
     {
-        _databaseService.UpdatePet(SelectedPet);
+        await _databaseService.UpdatePetAsync(SelectedPet);
         await Shell.Current.GoToAsync(".."); // Navigate back to the previous page
     }
 }

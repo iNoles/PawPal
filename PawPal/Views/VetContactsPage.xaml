@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:PawPal.Models"
+             xmlns:vm="clr-namespace:PawPal.ViewModel"
+             x:DataType="vm:VetContactsViewModel"
+             x:Class="PawPal.Views.VetContactsPage"
+             Title="Vet Contacts">
+    <VerticalStackLayout Padding="10">
+    
+    <CollectionView ItemsSource="{Binding VetContacts}"
+                SelectionMode="Single"
+                SelectedItem="{Binding SelectedVetContact, Mode=TwoWay}">
+        <CollectionView.ItemTemplate>
+            <DataTemplate x:DataType="local:VetContact">
+                <Border Margin="5" Stroke="Gray" StrokeThickness="1" Padding="10">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="8" />
+                    </Border.StrokeShape>
+                    <VerticalStackLayout>
+                        <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="18" />
+                        <Label Text="{Binding PhoneNumber}" FontSize="14" />
+                        <Label Text="{Binding Email}" FontSize="14" />
+                        <Label Text="{Binding Address}" FontSize="14" />
+                    </VerticalStackLayout>
+                </Border>
+            </DataTemplate>
+        </CollectionView.ItemTemplate>
+    </CollectionView>
+    
+    <Button Text="Add Vet Contact" Command="{Binding AddVetContactCommand}"/>
+    </VerticalStackLayout>
+</ContentPage>

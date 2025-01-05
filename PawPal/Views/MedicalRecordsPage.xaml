@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:PawPal.ViewModel"
              xmlns:models="clr-namespace:PawPal.Models"
-             x:Class="PawPal.MedicalRecordsPage"
+             x:Class="PawPal.Views.MedicalRecordsPage"
              x:DataType="vm:MedicalRecordsViewModel"
              Title="Medical Records">
 

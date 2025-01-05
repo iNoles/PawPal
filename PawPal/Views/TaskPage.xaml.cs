@@ -1,4 +1,4 @@
-namespace PawPal;
+namespace PawPal.Views;
 
 public partial class TaskPage : ContentPage
 {

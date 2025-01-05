@@ -1,7 +1,7 @@
 using PawPal.Models;
 using Plugin.LocalNotification;
 
-namespace PawPal;
+namespace PawPal.Services;
 
 public class NotificationService
 {

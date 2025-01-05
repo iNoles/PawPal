@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using PawPal.Services;
 using PawPal.ViewModel;
 using Plugin.LocalNotification;
 
@@ -26,6 +27,9 @@ public static class MauiProgram
 			Console.WriteLine($"LocalNotification initialization failed: {ex.Message}");
 		}
 
+		// Register DatabaseService
+        builder.Services.AddSingleton<DatabaseService>();
+
 		// Register ViewModel
 		builder.Services.AddTransient<MainPageViewModel>();
 		builder.Services.AddTransient<CalendarViewModel>();
@@ -33,6 +37,8 @@ public static class MauiProgram
 		builder.Services.AddTransient<EditProfileViewModel>();
 		builder.Services.AddTransient<TaskPageViewModel>();
 		builder.Services.AddTransient<MedicalRecordsViewModel>();
+		builder.Services.AddTransient<VetContactsViewModel>();
+		builder.Services.AddTransient<AddVetContactViewModel>();
 
 #if DEBUG
         builder.Logging.AddDebug(); // Adds debug logging in debug builds

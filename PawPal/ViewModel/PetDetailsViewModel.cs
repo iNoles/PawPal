@@ -1,10 +1,10 @@
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 using PawPal.Models;
+using PawPal.Services;
 
 namespace PawPal.ViewModel;
 
-//TODO: Implement Medical Records
 [QueryProperty(nameof(SelectedPet), nameof(SelectedPet))]
 public class PetDetailsViewModel : BaseViewModel
 {
@@ -36,22 +36,22 @@ public class PetDetailsViewModel : BaseViewModel
     public ICommand ViewMedicalRecordsCommand { get; }
 
     // Constructor
-    public PetDetailsViewModel()
+    public PetDetailsViewModel(DatabaseService databaseService)
     {
-        _databaseService = new DatabaseService();
+        _databaseService = databaseService;
 
         // Initialize commands
         EditProfileCommand = new Command(async () => await EditProfile());
         ViewMedicalRecordsCommand = new Command(async () => await ViewMedicalRecords());
     }
 
-    private void LoadUpcomingTasks()
+    private async void LoadUpcomingTasks()
     {
         if (SelectedPet == null)
             return;
 
         // Fetch tasks for the selected pet
-        var tasks = _databaseService.GetTasksForPet(SelectedPet.Id);
+        var tasks = await _databaseService.GetTasksForPetAsync(SelectedPet.Id);
 
         // Filter upcoming tasks
         var filteredTasks = tasks.Where(t => !t.IsCompleted).OrderBy(t => t.ScheduledDate);
