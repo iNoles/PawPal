@@ -1,21 +1,23 @@
 # 🐾 PawPal - Pet Care Organizer
 
-PawPal is a mobile app designed to help pet owners manage their pets' information, track medical records, schedule tasks, and store vet contacts efficiently. Built using .NET MAUI with SQLiteAsyncConnection for responsive database operations.
+PawPal is a .NET MAUI application designed to help pet owners manage their pets' information, track medical records, schedule tasks, and store vet contacts efficiently with SQLiteAsyncConnection for responsive database operations.
 
 ## 🚀 Features
 
 ✅ Pet Management – Add, edit, and delete pets with details like species and birthdate.\
-✅ Vet Contacts – Save and manage veterinary contacts.<br>
-✅ Task Scheduler – Keep track of upcoming pet care tasks.<br>
-✅ Medical Records – Store important health records.<br>
-✅ Local Notifications – Reminders for vet visits, vaccinations, and tasks.
+✅ Vet Contacts – Save and manage veterinary contacts.\
+✅ Task Scheduler – Keep track of upcoming pet care tasks.\
+✅ Medical Records – Store important health records.\
+✅ Local Notifications – Reminders for vet visits, vaccinations, and tasks.\
+✅ User-Friendly UI - Modern and responsive design for easy navigation.
 
 🛠️ Tech Stack
 
-- .NET MAUI – Cross-platform mobile development
-- SQLiteAsyncConnection – Fast, non-blocking local database
-- MVVM Pattern – Organized and scalable architecture
-- Dependency Injection – Efficient service management
+- .NET MAUI - Cross-platform framework
+- MVVM Architecture - Separation of concerns for better maintainability
+- XAML - UI design with data binding
+- C# - Backend logic
+- SQLite - Local storage for pet records
 
 ## Screenshots
 
@@ -64,7 +66,6 @@ Ensure you have the following installed on your machine:
 ### Roadmap
 
 - 🔹 Implement Recurring Tasks
-- 🔹 Enhance UI/UX Design
 
 ## Contribution
 

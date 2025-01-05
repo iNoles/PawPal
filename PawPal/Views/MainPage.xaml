@@ -5,64 +5,84 @@
              xmlns:vm="clr-namespace:PawPal.ViewModel"
              x:Class="PawPal.Views.MainPage"
              x:DataType="vm:MainPageViewModel"
-             Title="Pet Care Organizer">
+             Title="🐾 Pet Care Organizer">
     
     <ScrollView>
-        <Grid RowDefinitions="Auto, Auto, *, Auto" Padding="10" RowSpacing="10">
+        <Grid RowDefinitions="Auto, Auto, *, Auto" Padding="15" RowSpacing="12">
             <!-- Header -->
             <Label Text="🐾 My Pets" 
-                   FontSize="24"
+                   FontSize="26"
+                   FontAttributes="Bold"
                    HorizontalOptions="Center" 
                    VerticalOptions="Start" 
                    Grid.Row="0" />
-            
+
             <!-- Add Pet Section -->
-            <VerticalStackLayout Grid.Row="1" Padding="10" Spacing="5">
-                <Label Text="Add Pet" 
-                       FontSize="18" 
+            <VerticalStackLayout Grid.Row="1" Padding="15" Spacing="10">
+                <Label Text="Add a New Pet" 
+                       FontSize="20" 
                        FontAttributes="Bold" 
                        HorizontalOptions="Start" />
-                
-                <Entry Placeholder="Pet Name" Text="{Binding NewPetName}" />
-                <Entry Placeholder="Pet Species" Text="{Binding NewPetSpecies}" />
+                <Border Stroke="Gray" StrokeThickness="1" Padding="5">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="8" />
+                    </Border.StrokeShape>
+                    <Entry Placeholder="Pet Name" Text="{Binding NewPetName}" />
+                </Border>
+                <Border Stroke="Gray" StrokeThickness="1" Padding="5">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="8" />
+                    </Border.StrokeShape>
+                    <Entry Placeholder="Pet Species" Text="{Binding NewPetSpecies}" />
+                </Border>
                 <DatePicker Date="{Binding NewPetDateOfBirth}" />
-                <Button Text="Add Pet" Command="{Binding InsertPetCommand}" />
+                <Button Text="➕ Add Pet" Command="{Binding InsertPetCommand}" 
+                        BackgroundColor="Blue" TextColor="White" CornerRadius="10"/>
             </VerticalStackLayout>
 
-           <!-- View Pets Section -->
-            <VerticalStackLayout Grid.Row="2" Padding="5" Spacing="5">
-           <CollectionView ItemsSource="{Binding Pets}" SelectionMode="Single" SelectedItem="{Binding SelectedPet, Mode=TwoWay}">
-            <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="local:Pet">
-                    <Border Margin="5" Stroke="Gray" StrokeThickness="1" Padding="10">
-                        <Border.StrokeShape>
-                            <RoundRectangle CornerRadius="8" />
-                        </Border.StrokeShape>
-                        <VerticalStackLayout>
-                            <Label Text="{Binding Name}" FontAttributes="Bold" />
-                            <Label Text="{Binding Species}" FontSize="14" TextColor="Gray" />
-                        </VerticalStackLayout>
-                    </Border>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
-        </VerticalStackLayout>
+            <!-- View Pets Section -->
+            <VerticalStackLayout Grid.Row="2" Padding="10" Spacing="10">
+                <Label Text="My Pets"
+                       FontSize="20"
+                       FontAttributes="Bold"
+                       HorizontalOptions="Start" />
 
-            <VerticalStackLayout Grid.Row="3" Padding="5" Spacing="5">
+                <CollectionView ItemsSource="{Binding Pets}" SelectionMode="Single" SelectedItem="{Binding SelectedPet, Mode=TwoWay}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="local:Pet">
+                            <Border Margin="10" Stroke="{Binding IsSelected, Converter={StaticResource SelectedBorderConverter}}" 
+                                    StrokeThickness="2" Padding="12">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="12" />
+                                </Border.StrokeShape>
+                                <VerticalStackLayout>
+                                    <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="18"/>
+                                    <Label Text="{Binding Species}" FontSize="14" TextColor="Gray"/>
+                                </VerticalStackLayout>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </VerticalStackLayout>
+
+            <!-- Upcoming Tasks -->
+            <VerticalStackLayout Grid.Row="3" Padding="10" Spacing="10">
                 <Label Text="Upcoming Tasks"
-                    FontSize="18"
+                    FontSize="20"
                     FontAttributes="Bold"
                     HorizontalOptions="Start" />
+
                 <CollectionView ItemsSource="{Binding UpcomingTasks}" SelectionMode="None">
                     <CollectionView.ItemTemplate>
                         <DataTemplate x:DataType="local:Tasks">
-                            <Border Margin="5" Stroke="Gray" StrokeThickness="1" Padding="10">
+                            <Border Margin="10" Stroke="Gray" StrokeThickness="1" Padding="12">
                                 <Border.StrokeShape>
-                                    <RoundRectangle CornerRadius="8" />
+                                    <RoundRectangle CornerRadius="12" />
                                 </Border.StrokeShape>
                                 <VerticalStackLayout>
-                                    <Label Text="Task Name: {Binding Title}" FontAttributes="Bold" />
-                                    <Label Text="{Binding ScheduledDate, StringFormat='Due: {0:MMM dd, yyyy}'}" FontSize="12" TextColor="Gray" />
+                                    <Label Text="Task: {Binding Title}" FontAttributes="Bold" FontSize="16"/>
+                                    <Label Text="{Binding ScheduledDate, StringFormat='Due: {0:MMM dd, yyyy}'}" 
+                                           FontSize="14" TextColor="Gray"/>
                                 </VerticalStackLayout>
                             </Border>
                         </DataTemplate>

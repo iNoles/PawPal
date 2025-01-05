@@ -10,36 +10,37 @@
         <VerticalStackLayout Padding="20" Spacing="15">
 
             <!-- Pet Profile Info -->
-            <Border Stroke="Gray" StrokeThickness="1" BackgroundColor="LightGray" Padding="10">
-                <Border.Clip>
-                    <RoundRectangleGeometry CornerRadius="10" Rect="0,0,300,150" />
-                </Border.Clip>
-                <VerticalStackLayout Spacing="10">
-                    <Label Text="Pet Profile" FontSize="Medium" FontAttributes="Bold" />
-                    <Label Text="{Binding SelectedPet.Name}" FontSize="Large" />
-                    <Label Text="{Binding SelectedPet.Species}" />
-                    <Label Text="{Binding SelectedPet.Age}" />
-                    <Label Text="{Binding SelectedPet.Breed}" />
+            <Border Stroke="Gray" StrokeThickness="2" Padding="15">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="12" />
+                </Border.StrokeShape>
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="Pet Profile" FontSize="20" FontAttributes="Bold" TextColor="DarkBlue"/>
+                    <Label Text="{Binding SelectedPet.Name}" FontSize="22" FontAttributes="Bold"/>
+                    <Label Text="{Binding SelectedPet.Species}" FontSize="18" TextColor="Gray"/>
+                    <Label Text="Age: {Binding SelectedPet.Age}" FontSize="16"/>
+                    <Label Text="Breed: {Binding SelectedPet.Breed}" FontSize="16"/>
                 </VerticalStackLayout>
             </Border>
 
             <!-- Schedule List -->
-            <Border Stroke="Gray" StrokeThickness="1" BackgroundColor="LightGray" Padding="10">
-                <Border.Clip>
-                    <RoundRectangleGeometry CornerRadius="10" Rect="0,0,300,150" />
-                </Border.Clip>
-                <VerticalStackLayout Spacing="10">
-                    <Label Text="Upcoming Tasks" FontSize="Medium" FontAttributes="Bold" />
+            <Border Stroke="Gray" StrokeThickness="2" Padding="15">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="12" />
+                </Border.StrokeShape>
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="Upcoming Tasks" FontSize="20" FontAttributes="Bold" TextColor="DarkBlue"/>
                     <CollectionView ItemsSource="{Binding UpcomingTasks}">
                         <CollectionView.ItemTemplate>
                             <DataTemplate x:DataType="local:Tasks"> 
-                                <Border Stroke="Gray" StrokeThickness="1" Padding="10">
-                                    <Border.Clip>
-                                        <RoundRectangleGeometry CornerRadius="5" Rect="0,0,300,50" />
-                                    </Border.Clip>
+                                <Border Stroke="LightGray" StrokeThickness="1" Padding="12">
+                                    <Border.StrokeShape>
+                                        <RoundRectangle CornerRadius="8" />
+                                    </Border.StrokeShape>
                                     <VerticalStackLayout>
-                                        <Label Text="{Binding Title}" FontAttributes="Bold" />
-                                        <Label Text="{Binding ScheduledDate, StringFormat='Due: {0:MMMM dd, yyyy}'}" />
+                                        <Label Text="{Binding Title}" FontSize="18" FontAttributes="Bold"/>
+                                        <Label Text="{Binding ScheduledDate, StringFormat='Due: {0:MMMM dd, yyyy}'}"
+                                               FontSize="16" TextColor="Gray"/>
                                     </VerticalStackLayout>
                                 </Border>
                             </DataTemplate>
@@ -49,9 +50,11 @@
             </Border>
 
             <!-- Action Buttons -->
-            <HorizontalStackLayout Spacing="15" HorizontalOptions="Center">
-                <Button Text="Edit Profile" Command="{Binding EditProfileCommand}" />
-                <Button Text="Medical Records" Command="{Binding ViewMedicalRecordsCommand}" />
+            <HorizontalStackLayout Spacing="20" HorizontalOptions="Center">
+                <Button Text="Edit Profile" Command="{Binding EditProfileCommand}"
+                        BackgroundColor="DodgerBlue" TextColor="White" CornerRadius="10" Padding="12"/>
+                <Button Text="Medical Records" Command="{Binding ViewMedicalRecordsCommand}"
+                        BackgroundColor="ForestGreen" TextColor="White" CornerRadius="10" Padding="12"/>
             </HorizontalStackLayout>
 
         </VerticalStackLayout>

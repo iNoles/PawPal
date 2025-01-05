@@ -5,14 +5,42 @@
              x:Class="PawPal.Views.EditProfilePage"
              x:DataType="vm:EditProfileViewModel"
              Title="Edit Profile">
-    <ScrollView>
-        <VerticalStackLayout Padding="20" Spacing="15">
-            <Entry Text="{Binding SelectedPet.Name}" Placeholder="Name" />
-            <Entry Text="{Binding SelectedPet.Species}" Placeholder="Species" />
-            <Entry Text="{Binding SelectedPet.Age}" Placeholder="Age" Keyboard="Numeric" />
-            <Entry Text="{Binding SelectedPet.Breed}" Placeholder="Breed" />
 
-            <Button Text="Save" Command="{Binding SaveCommand}" />
+    <ScrollView>
+        <VerticalStackLayout Padding="25" Spacing="15">
+
+            <!-- Header -->
+            <Label Text="Edit Pet Profile" 
+                   FontSize="22" 
+                   FontAttributes="Bold" 
+                   HorizontalOptions="Center" 
+                   Padding="5" />
+
+            <!-- Name -->
+            <Label Text="Name" FontAttributes="Bold" />
+            <Entry Text="{Binding SelectedPet.Name}" Placeholder="Enter pet's name" />
+
+            <!-- Species -->
+            <Label Text="Species" FontAttributes="Bold" />
+            <Entry Text="{Binding SelectedPet.Species}" Placeholder="Enter species" />
+
+            <!-- Age -->
+            <Label Text="Age" FontAttributes="Bold" />
+            <Entry Text="{Binding SelectedPet.Age}" Placeholder="Enter age" Keyboard="Numeric" />
+
+            <!-- Breed -->
+            <Label Text="Breed" FontAttributes="Bold" />
+            <Entry Text="{Binding SelectedPet.Breed}" Placeholder="Enter breed" />
+
+            <!-- Save Button -->
+            <Button Text="Save Changes"
+                    Command="{Binding SaveCommand}"
+                    BackgroundColor="DodgerBlue"
+                    TextColor="White"
+                    CornerRadius="10"
+                    Padding="12"
+                    FontSize="18"
+                    HorizontalOptions="Fill" />
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

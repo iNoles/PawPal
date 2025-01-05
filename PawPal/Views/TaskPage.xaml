@@ -6,40 +6,77 @@
              x:DataType="vm:TaskPageViewModel">
 
     <ScrollView>
-        <VerticalStackLayout Padding="10" Spacing="15">
-                <!-- Pet Assignment -->
-                <Label Text="Assign Pet" FontAttributes="Bold" />
-                <Picker Title="Select Pet"
-                        ItemsSource="{Binding Pets}"
-                        SelectedItem="{Binding SelectedPetId}" />
+        <VerticalStackLayout Padding="20" Spacing="15">
+            
+            <!-- Pet Assignment -->
+            <Border Stroke="Gray" StrokeThickness="2" Padding="15">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="12" />
+                </Border.StrokeShape>
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="Assign Pet" FontSize="18" FontAttributes="Bold" TextColor="DarkBlue"/>
+                    <Picker Title="Select Pet"
+                            ItemsSource="{Binding Pets}"
+                            SelectedItem="{Binding SelectedPetId}"
+                            BackgroundColor="LightGray" />
+                </VerticalStackLayout>
+            </Border>
 
             <!-- Task Type -->
-            <Label Text="Task Type" FontAttributes="Bold" />
-            <Picker Title="Select Task Type"
-                    ItemsSource="{Binding TaskTypes}"
-                    SelectedItem="{Binding SelectedTaskType}" />
+            <Border Stroke="Gray" StrokeThickness="2" Padding="15">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="12" />
+                </Border.StrokeShape>
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="Task Type" FontSize="18" FontAttributes="Bold" TextColor="DarkBlue"/>
+                    <Picker Title="Select Task Type"
+                            ItemsSource="{Binding TaskTypes}"
+                            SelectedItem="{Binding SelectedTaskType}"
+                            BackgroundColor="LightGray" />
+                </VerticalStackLayout>
+            </Border>
 
             <!-- Date and Time -->
-            <Label Text="Date &amp; Time" FontAttributes="Bold" />
-            <DatePicker Date="{Binding TaskDate}" />
-            <TimePicker Time="{Binding TaskTime}" />
+            <Border Stroke="Gray" StrokeThickness="2" Padding="15">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="12" />
+                </Border.StrokeShape>
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="Date &amp; Time" FontSize="18" FontAttributes="Bold" TextColor="DarkBlue"/>
+                    <DatePicker Date="{Binding TaskDate}" BackgroundColor="LightGray" />
+                    <TimePicker Time="{Binding TaskTime}" BackgroundColor="LightGray" />
+                </VerticalStackLayout>
+            </Border>
 
             <!-- Notes -->
-            <Label Text="Notes" FontAttributes="Bold" />
-            <Editor Placeholder="Add any additional details"
-                    AutoSize="TextChanges"
-                    Text="{Binding Notes}" />
+            <Border Stroke="Gray" StrokeThickness="2" BackgroundColor="White" Padding="15">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="12" />
+                </Border.StrokeShape>
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="Notes" FontSize="18" FontAttributes="Bold" TextColor="DarkBlue"/>
+                    <Editor Placeholder="Add any additional details"
+                            AutoSize="TextChanges"
+                            Text="{Binding Notes}"
+                            BackgroundColor="LightGray" />
+                </VerticalStackLayout>
+            </Border>
 
             <!-- Is Completed -->
-             <HorizontalStackLayout Spacing="10">
-                <Label Text="Completed?" FontAttributes="Bold" VerticalOptions="Center" />
+            <HorizontalStackLayout Spacing="15" Padding="10">
+                <Label Text="Completed?" FontSize="18" FontAttributes="Bold" VerticalOptions="Center" />
                 <CheckBox IsChecked="{Binding IsCompleted}" VerticalOptions="Center" />
             </HorizontalStackLayout>
 
             <!-- Save Button -->
             <Button Text="Save Task"
                     Command="{Binding SaveTaskCommand}"
-                    IsEnabled="{Binding CanSave}" />
+                    IsEnabled="{Binding CanSave}"
+                    BackgroundColor="DodgerBlue"
+                    TextColor="White"
+                    CornerRadius="10"
+                    Padding="12"
+                    FontSize="18" />
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

@@ -5,17 +5,47 @@
              x:DataType="vm:AddVetContactViewModel"
              x:Class="PawPal.Views.AddEditVetContactPage"
              Title="Add/Edit Vet Contact">
-    <ScrollView>
-        <VerticalStackLayout Padding="10" Spacing="15">
-            <Entry x:Name="NameEntry" Placeholder="Vet Name" Text="{Binding Name}"/>
-            <Entry x:Name="PhoneEntry" Placeholder="Phone Number" Keyboard="Telephone" Text="{Binding Phone}" />
-            <Entry x:Name="EmailEntry" Placeholder="Email" Keyboard="Email" Text="{Binding Email}" />
-            <Entry x:Name="AddressEntry" Placeholder="Address" Text="{Binding Address}"/>
-            <Editor x:Name="NotesEditor" Placeholder="Notes (Optional)" HeightRequest="100" Text="{Binding Notes}" />
 
-             <!-- Save Button -->
-            <Button Text="Save Task"
-                    Command="{Binding SaveTaskCommand}" />
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="15">
+
+            <!-- Header -->
+            <Label Text="Vet Contact Details" 
+                   FontSize="22" 
+                   FontAttributes="Bold" 
+                   HorizontalOptions="Center"
+                   Padding="5" />
+
+            <!-- Name -->
+            <Label Text="Vet Name" FontAttributes="Bold" />
+            <Entry x:Name="NameEntry" Placeholder="Enter vet's name" Text="{Binding Name}" />
+
+            <!-- Phone Number -->
+            <Label Text="Phone Number" FontAttributes="Bold" />
+            <Entry x:Name="PhoneEntry" Placeholder="Enter phone number" Keyboard="Telephone" Text="{Binding Phone}" />
+
+            <!-- Email -->
+            <Label Text="Email" FontAttributes="Bold" />
+            <Entry x:Name="EmailEntry" Placeholder="Enter email address" Keyboard="Email" Text="{Binding Email}" />
+
+            <!-- Address -->
+            <Label Text="Address" FontAttributes="Bold" />
+            <Entry x:Name="AddressEntry" Placeholder="Enter address" Text="{Binding Address}" />
+
+            <!-- Notes -->
+            <Label Text="Notes (Optional)" FontAttributes="Bold" />
+            <Editor x:Name="NotesEditor" Placeholder="Enter additional details" HeightRequest="100" Text="{Binding Notes}" />
+
+            <!-- Save Button -->
+            <Button Text="Save Contact"
+                    Command="{Binding SaveTaskCommand}"
+                    BackgroundColor="DodgerBlue"
+                    TextColor="White"
+                    CornerRadius="10"
+                    Padding="12"
+                    FontSize="18"
+                    HorizontalOptions="Fill" />
+
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>
