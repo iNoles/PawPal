@@ -13,11 +13,8 @@ PawPal is a mobile app designed to help pet owners manage their pets' informatio
 🛠️ Tech Stack
 
 - .NET MAUI – Cross-platform mobile development
-
 - SQLiteAsyncConnection – Fast, non-blocking local database
-
 - MVVM Pattern – Organized and scalable architecture
-
 - Dependency Injection – Efficient service management
 
 ## Screenshots
