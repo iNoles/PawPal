@@ -11,7 +11,7 @@ PawPal is a .NET MAUI application designed to help pet owners manage their pets'
 ✅ Local Notifications – Reminders for vet visits, vaccinations, and tasks.\
 ✅ User-Friendly UI - Modern and responsive design for easy navigation.
 
-🛠️ Tech Stack
+## 🛠️ Tech Stack
 
 - .NET MAUI - Cross-platform framework
 - MVVM Architecture - Separation of concerns for better maintainability
