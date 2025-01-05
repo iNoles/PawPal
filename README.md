@@ -1,17 +1,24 @@
-# PawPal
+# 🐾 PawPal - Pet Care Organizer
 
-PawPal is a mobile application built using .NET MAUI designed to help pet owners manage their pets and their tasks efficiently. It allows users to add pets, assign tasks to pets, and keep track of pet-related activities with ease.
+PawPal is a mobile app designed to help pet owners manage their pets' information, track medical records, schedule tasks, and store vet contacts efficiently. Built using .NET MAUI with SQLiteAsyncConnection for responsive database operations.
 
-## Features
+## 🚀 Features
 
-- **Add and Manage Pets**: Add pets with details such as name, species, and date of birth. Edit or remove pet information as needed.
-- **Multi-Pet Support**: Seamlessly manage multiple pets within the app, with separate profiles and tasks for each pet.
-- **Task Management**: Assign and organize tasks for each pet, with options to set due dates and priorities.
-- **Task Reminders**: Schedule reminders for pet-related tasks, ensuring you never miss an important task or event.
-- **Notification Support**: The app uses local notifications to remind users of upcoming pet tasks based on their due dates.
-- **Medical Records Management**: Record and manage pet medical history, including vaccination records, prescriptions, and notes from veterinarians.
-- **Customizable Medical Records**: Easily add, edit, or delete medical records for pets, with fields for record type, date, notes, and more.
-- **Dark Mode**: Built-in support for Dark Mode, ensuring a visually comfortable experience in low-light conditions.
+✅ Pet Management – Add, edit, and delete pets with details like species and birthdate.\
+✅ Vet Contacts – Save and manage veterinary contacts.<br>
+✅ Task Scheduler – Keep track of upcoming pet care tasks.<br>
+✅ Medical Records – Store important health records.<br>
+✅ Local Notifications – Reminders for vet visits, vaccinations, and tasks.
+
+🛠️ Tech Stack
+
+- .NET MAUI – Cross-platform mobile development
+
+- SQLiteAsyncConnection – Fast, non-blocking local database
+
+- MVVM Pattern – Organized and scalable architecture
+
+- Dependency Injection – Efficient service management
 
 ## Screenshots
 
@@ -20,15 +27,6 @@ Home Screen: Displays the list of pets and an overview of tasks.
 
 Task Screen: Allows users to view and manage tasks assigned to each pet.
 ![Task Screen](screenshot/tasks.png)
-
-## Technologies Used
-
--  **.NET MAUI**: A cross-platform mobile app framework for building iOS, Android, and Windows apps. MAUI enables a single codebase for all platforms.
--  **C#**: Primary programming language used for development, allowing for strong typing and modern object-oriented programming features.
--  **XAML**: A declarative language for building user interfaces, primarily used with .NET-based applications.
--  **SQLite**: A lightweight, serverless SQL database used for persisting pet and task data locally on the device.
--  **LINQ**: Used for querying and manipulating collections of pet and task data, enabling clean and efficient operations such as sorting, filtering, and aggregating data.
-- **Visual Studio**: Recommended IDE for streamlined development and debugging with .NET MAUI.
 
 ## Getting Started
 
@@ -65,6 +63,11 @@ Ensure you have the following installed on your machine:
    ```
 
 5. The app should launch on your device or emulator, allowing you to add pets, assign tasks, and track them.
+
+### Roadmap
+
+- 🔹 Implement Recurring Tasks
+- 🔹 Enhance UI/UX Design
 
 ## Contribution
 
