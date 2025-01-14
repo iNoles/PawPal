@@ -65,8 +65,6 @@ Ensure you have the following installed on your machine:
 
 ### Roadmap
 
-- 🔹 Implement Recurring Tasks
-
 ## Contribution
 
 If you'd like to contribute to PawPal, feel free to fork the repository, create a new branch, and submit a pull request with your changes.

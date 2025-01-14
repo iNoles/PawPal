@@ -62,6 +62,19 @@
                 </VerticalStackLayout>
             </Border>
 
+             <!-- Recurrence Section Toggle -->
+            <HorizontalStackLayout Spacing="15" Padding="10">
+                <Label Text="Recurring Task" FontSize="18" FontAttributes="Bold" VerticalOptions="Center" />
+                <Switch IsToggled="{Binding NewTask.IsRecurring}" VerticalOptions="Center" />
+            </HorizontalStackLayout>
+
+            <!-- Recurrence Details -->
+            <StackLayout IsVisible="{Binding NewTask.IsRecurring}" Padding="15" Spacing="15">
+                <Picker ItemsSource="{Binding RecurrenceTypes}" SelectedItem="{Binding NewTask.RecurrenceType}" />
+                <Entry Keyboard="Numeric" Placeholder="Interval (e.g., 3 days)" Text="{Binding NewTask.RecurrenceInterval}" />
+                <DatePicker Date="{Binding NewTask.EndDate}" />
+            </StackLayout>
+
             <!-- Is Completed -->
             <HorizontalStackLayout Spacing="15" Padding="10">
                 <Label Text="Completed?" FontSize="18" FontAttributes="Bold" VerticalOptions="Center" />

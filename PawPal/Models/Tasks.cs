@@ -24,4 +24,12 @@ public class Tasks
     // To improve performance of foreign key queries
     // Foreign key to associate the task with a specific pet
     public int PetId { get; set; }
+
+    public bool IsRecurring { get; set; }
+
+    public string RecurrenceType { get; set; } = string.Empty;
+
+    public int RecurrenceInterval { get; set; } = 1;
+    
+    public DateTime EndDate { get; set; }
 }

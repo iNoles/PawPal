@@ -37,4 +37,40 @@ public class NotificationService
             await LocalNotificationCenter.Current.Show(notification);
         }
     }
+
+   public static async Task ScheduleRecurringNotifications(Tasks task)
+   {
+        DateTime currentNotificationTime = task.ScheduledDate;
+        
+        // Loop through the recurrence interval and schedule notifications until the end date
+        while (currentNotificationTime <= task.EndDate)
+        {
+            // Schedule the notification
+            task.ScheduledDate = currentNotificationTime;
+            await ScheduleNotificationAsync(task);
+            
+            // Calculate the next recurrence date based on recurrence type and interval
+            currentNotificationTime = GetNextRecurrenceTime(currentNotificationTime, task.RecurrenceType, task.RecurrenceInterval);
+        }
+        
+        // Once the task has reached its end date or the recurrence period has passed, drop the scheduling
+        Console.WriteLine("Task recurrence has ended or exceeded the expected period. No further notifications will be scheduled.");
+    }
+
+    private static DateTime GetNextRecurrenceTime(DateTime currentNotificationTime, string recurrenceType, int recurrenceInterval)
+    {
+        // Add validation for recurrence interval
+        if (recurrenceInterval <= 0)
+        {
+            Console.WriteLine("Recurrence interval should be a positive number.");
+            return currentNotificationTime;
+        }
+        return recurrenceType switch
+        {
+            "Daily" => currentNotificationTime.AddDays(recurrenceInterval),
+            "Weekly" => currentNotificationTime.AddDays(7 * recurrenceInterval),
+            "Monthly" => currentNotificationTime.AddMonths(recurrenceInterval),
+            _ => currentNotificationTime,
+        };
+    }
 }

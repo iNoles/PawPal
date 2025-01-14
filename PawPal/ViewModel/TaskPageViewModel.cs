@@ -18,6 +18,12 @@ public class TaskPageViewModel : BaseViewModel
         "Feeding", "Grooming", "Vet Appointment", "Exercise", "Other"
     ];
 
+    // Recurrence Types (e.g., daily, weekly)
+    public ObservableCollection<string> RecurrenceTypes { get; } =
+    [
+        "Daily", "Weekly", "Monthly"
+    ];
+
     // Task Properties
     private string? _selectedTaskType;
     public string? SelectedTaskType
@@ -67,6 +73,35 @@ public class TaskPageViewModel : BaseViewModel
         set => SetProperty(ref _pets, value);
     }
 
+    // Recurrence properties
+    private bool _isRecurring = false;
+    public bool IsRecurring
+    {
+        get => _isRecurring;
+        set => SetProperty(ref _isRecurring, value);
+    }
+
+    private string _recurrenceType = string.Empty;
+    public string RecurrenceType
+    {
+        get => _recurrenceType;
+        set => SetProperty(ref _recurrenceType, value);
+    }
+
+    private int _recurrenceInterval = 1;
+    public int RecurrenceInterval
+    {
+        get => _recurrenceInterval;
+        set  => SetProperty(ref _recurrenceInterval, value);
+    }
+
+    private DateTime _endDate = DateTime.Today.AddMonths(1); // Default to one month from today
+    public DateTime EndDate
+    {
+        get => _endDate;
+        set => SetProperty(ref _endDate, value);
+    }
+
     // Command for saving the task
     public ICommand SaveTaskCommand { get; }
 
@@ -79,7 +114,7 @@ public class TaskPageViewModel : BaseViewModel
         _databaseService = databaseService;
         _isEditMode = existingTask != null;
 
-        if (existingTask != null)
+        if (_isEditMode && existingTask != null)
         {
             // Populate fields with the existing task details for editing
             SelectedTaskType = existingTask.Title;
@@ -88,6 +123,12 @@ public class TaskPageViewModel : BaseViewModel
             Notes = existingTask.Notes;
             IsCompleted = existingTask.IsCompleted;
             SelectedPetId = existingTask.PetId;
+
+            // Load recurrence data if editing a recurring task
+            IsRecurring = existingTask.IsRecurring;
+            RecurrenceType = existingTask.RecurrenceType;
+            RecurrenceInterval = existingTask.RecurrenceInterval;
+            EndDate = existingTask.EndDate;
         }
 
         SaveTaskCommand = new Command(async () => await SaveTask(), () => CanSave);
@@ -98,18 +139,53 @@ public class TaskPageViewModel : BaseViewModel
     {
         // Combine date and time
         var scheduledDateTime = TaskDate.Add(TaskTime);
-
+        
+        // Validate the scheduled date
+        if (scheduledDateTime < DateTime.Now)
+        {
+            // Show an error to the user (you could display a message in the UI)
+            Console.WriteLine("Scheduled date cannot be in the past.");
+            return;
+        }
+        
+        // Validate the recurrence end date
+        if (EndDate < DateTime.Now)
+        {
+            // Show an error to the user (you could display a message in the UI)
+            Console.WriteLine("End date cannot be in the past.");
+            return;
+        }
+        
+        // Validate recurrence interval
+        if (IsRecurring && RecurrenceInterval <= 0)
+        {
+            // Show an error to the user (you could display a message in the UI)
+            Console.WriteLine("Recurrence interval must be a positive number.");
+            return;
+        }
+        
         var task = new Tasks
         {
             Title = SelectedTaskType ?? "Task",
             ScheduledDate = scheduledDateTime,
             Notes = Notes,
             IsCompleted = false,
-            PetId = SelectedPetId
+            PetId = SelectedPetId,
+            RecurrenceType = RecurrenceType,
+            RecurrenceInterval = RecurrenceInterval,
+            EndDate = EndDate
         };
-
-        await NotificationService.ScheduleNotificationAsync(task);
-
+        
+        // Schedule notifications based on recurrence
+        if (IsRecurring)
+        {
+            await NotificationService.ScheduleRecurringNotifications(task);
+        }
+        else
+        {
+            await NotificationService.ScheduleNotificationAsync(task);
+        }
+        
         if (_isEditMode)
         {
             await _databaseService.UpdateTaskAsync(task);
@@ -118,7 +194,7 @@ public class TaskPageViewModel : BaseViewModel
         {
             await _databaseService.InsertTasksAsync(task);
         }
-
+        
         // Navigate back to the previous page
         await Shell.Current.GoToAsync("..");
     }
