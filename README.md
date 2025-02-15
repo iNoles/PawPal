@@ -1,23 +1,22 @@
 # 🐾 PawPal - Pet Care Organizer
 
-PawPal is a .NET MAUI application designed to help pet owners manage their pets' information, track medical records, schedule tasks, and store vet contacts efficiently with SQLiteAsyncConnection for responsive database operations.
+PawPal is a .NET MAUI mobile application designed to help pet owners manage their pets' tasks, medical records, and vet contacts efficiently with SQLiteAsyncConnection for responsive database operations.
 
-## 🚀 Features
+## Features
 
-✅ Pet Management – Add, edit, and delete pets with details like species and birthdate.\
-✅ Vet Contacts – Save and manage veterinary contacts.\
-✅ Task Scheduler – Keep track of upcoming pet care tasks.\
-✅ Medical Records – Store important health records.\
-✅ Local Notifications – Reminders for vet visits, vaccinations, and tasks.\
-✅ User-Friendly UI - Modern and responsive design for easy navigation.
+- Task Management: Create, edit, and manage pet-related tasks (e.g., feeding, grooming, vet appointments).
+- Recurring Tasks: Set up recurring tasks with customizable intervals.
+- Vet Contacts: Maintain a directory of veterinarians for quick access.
+- Notifications: Get reminders for scheduled tasks.
+- Offline Support: Uses SQLite for local data storage.
 
-## 🛠️ Tech Stack
+## Technologies Used
 
-- .NET MAUI - Cross-platform framework
-- MVVM Architecture - Separation of concerns for better maintainability
-- XAML - UI design with data binding
-- C# - Backend logic
-- SQLite - Local storage for pet records
+- .NET MAUI for cross-platform development
+- MVVM Architecture for a clean separation of concerns
+- SQLite (via Room-like Database Service) for local data persistence
+- Dependency Injection (DI) for better maintainability
+- Shell Navigation for seamless navigation
 
 ## Screenshots
 
@@ -62,8 +61,6 @@ Ensure you have the following installed on your machine:
    ```
 
 5. The app should launch on your device or emulator, allowing you to add pets, assign tasks, and track them.
-
-### Roadmap
 
 ## Contribution
 
