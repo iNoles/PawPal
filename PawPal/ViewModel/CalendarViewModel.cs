@@ -4,7 +4,7 @@ using PawPal.Services;
 
 namespace PawPal.ViewModel;
 
-//TODO: Colored Indicatiors: Feeding = Green, Vet = Red, Grooming = Blue
+//TODO: Colored Indicators: Feeding = Green, Vet = Red, Grooming = Blue
 //TODO: Tap to View/Edit Task
 public class CalendarViewModel : BaseViewModel
 {
@@ -57,27 +57,27 @@ public class CalendarViewModel : BaseViewModel
         SelectedDate = IsWeeklyView ? SelectedDate.AddDays(offset * 7) : SelectedDate.AddMonths(offset);
     }
 
-    private void GenerateCalendar()
+    private async void GenerateCalendar()
     {
         VisibleCalendarDays.Clear();
         if (IsWeeklyView)
         {
-            foreach (var day in GenerateWeeklyCalendarDays())
-                VisibleCalendarDays.Add(day);
+            var days = await GenerateWeeklyCalendarDays();
+            foreach (var day in days) VisibleCalendarDays.Add(day);
         }
         else
         {
-            foreach (var day in GenerateMonthlyCalendarDays())
-                VisibleCalendarDays.Add(day);
+            var days = await GenerateMonthlyCalendarDays();
+            foreach (var day in days) VisibleCalendarDays.Add(day);
         }
     }
 
-    private ObservableCollection<CalendarDay> GenerateWeeklyCalendarDays()
+    private async Task<ObservableCollection<CalendarDay>> GenerateWeeklyCalendarDays()
     {
         var days = new ObservableCollection<CalendarDay>();
         var startOfWeek = SelectedDate.AddDays(-(int)SelectedDate.DayOfWeek);
         var endOfWeek = startOfWeek.AddDays(6);
-        var tasks = _databaseService.GetTasksForMonthAsync(startOfWeek);
+        var tasks = await _databaseService.GetTasksForMonthAsync(startOfWeek);
 
         for (int i = 0; i < 7; i++)
         {
@@ -94,14 +94,14 @@ public class CalendarViewModel : BaseViewModel
         return days;
     }
 
-    private ObservableCollection<CalendarDay> GenerateMonthlyCalendarDays()
+    private async Task<ObservableCollection<CalendarDay>> GenerateMonthlyCalendarDays()
     {
         var days = new ObservableCollection<CalendarDay>();
         var firstDayOfMonth = new DateTime(SelectedDate.Year, SelectedDate.Month, 1);
         var firstDayOfGrid = firstDayOfMonth.AddDays(-(int)firstDayOfMonth.DayOfWeek);
         var lastDayOfGrid = firstDayOfMonth.AddMonths(1).AddDays(-1).AddDays(6 - (int)firstDayOfMonth.AddMonths(1).DayOfWeek);
 
-        var tasks = _databaseService.GetTasksForMonthAsync(SelectedDate);
+        var tasks = await _databaseService.GetTasksForMonthAsync(SelectedDate);
 
         for (var date = firstDayOfGrid; date <= lastDayOfGrid; date = date.AddDays(1))
         {
@@ -116,5 +116,4 @@ public class CalendarViewModel : BaseViewModel
         }
         return days;
     }
-
 }

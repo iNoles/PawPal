@@ -4,7 +4,7 @@ using PawPal.Services;
 
 namespace PawPal.ViewModel;
 
-public class AddVetContactViewModel: BaseViewModel
+public class AddVetContactViewModel : BaseViewModel
 {
     private readonly DatabaseService _databaseService;
     private readonly bool _isEditMode;
@@ -13,15 +13,31 @@ public class AddVetContactViewModel: BaseViewModel
     public string Name
     {
         get => _name;
-        set => SetProperty(ref _name, value);
+        set
+        {
+            if (SetProperty(ref _name, value))
+            {
+                OnPropertyChanged(nameof(IsNameInvalid));
+                OnPropertyChanged(nameof(CanSave));
+            }
+        }
     }
+    public bool IsNameInvalid => string.IsNullOrWhiteSpace(Name);
 
     private string _phone = string.Empty;
     public string Phone
     {
         get => _phone;
-        set => SetProperty(ref _phone, value);
+        set
+        {
+            if (SetProperty(ref _phone, value))
+            {
+                OnPropertyChanged(nameof(IsPhoneInvalid));
+                OnPropertyChanged(nameof(CanSave));
+            }
+        }
     }
+    public bool IsPhoneInvalid => string.IsNullOrWhiteSpace(Phone);
 
     private string? _email;
     public string? Email
@@ -44,6 +60,8 @@ public class AddVetContactViewModel: BaseViewModel
         set => SetProperty(ref _notes, value);
     }
 
+    public bool CanSave => !IsNameInvalid && !IsPhoneInvalid;
+
     public ICommand SaveTaskCommand { get; }
 
     public AddVetContactViewModel(DatabaseService databaseService, VetContact? existingVetContact = null)
@@ -53,7 +71,6 @@ public class AddVetContactViewModel: BaseViewModel
 
         if (existingVetContact != null)
         {
-            // Populate fields with the existing vet contact details for editing
             Name = existingVetContact.Name;
             Phone = existingVetContact.PhoneNumber;
             Email = existingVetContact.Email;
@@ -61,15 +78,16 @@ public class AddVetContactViewModel: BaseViewModel
             Notes = existingVetContact.Notes;
         }
 
-        SaveTaskCommand = new Command(async () => await SaveVetContact());
+        SaveTaskCommand = new Command(async () => await SaveVetContact(), () => CanSave);
     }
 
-    private async Task SaveVetContact() {
+    private async Task SaveVetContact()
+    {
         var contact = new VetContact
         {
             Name = Name,
             PhoneNumber = Phone,
-            Email =  Email,
+            Email = Email,
             Address = Address,
             Notes = Notes
         };
@@ -83,7 +101,6 @@ public class AddVetContactViewModel: BaseViewModel
             await _databaseService.InsertVetContactAsync(contact);
         }
 
-        // Navigate back to the previous page
         await Shell.Current.GoToAsync("..");
     }
 }

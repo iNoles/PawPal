@@ -7,27 +7,28 @@ namespace PawPal.ViewModel;
 public class EditProfileViewModel : BaseViewModel
 {
     private readonly DatabaseService _databaseService;
-    public Pet SelectedPet { get; private set; }
+    public Pet? SelectedPet { get; private set; }
 
     public ICommand SaveCommand { get; }
 
-    public EditProfileViewModel(DatabaseService databaseService, int petId)
+    public EditProfileViewModel(DatabaseService databaseService)
     {
         _databaseService = databaseService;
-        LoadPets(petId);
-
-        SaveCommand = new Command(Save);
+        SaveCommand = new Command(async () => await SaveAsync());
     }
 
-    private async void LoadPets(int petId)
+    public async Task InitializeAsync(int petId)
     {
         SelectedPet = await _databaseService.GetPetByIdAsync(petId);
+        OnPropertyChanged(nameof(SelectedPet)); // Notify UI that SelectedPet is updated
     }
 
-    private async void Save()
+    private async Task SaveAsync()
     {
-        await _databaseService.UpdatePetAsync(SelectedPet);
-        await Shell.Current.GoToAsync(".."); // Navigate back to the previous page
+        if (SelectedPet != null)
+        {
+            await _databaseService.UpdatePetAsync(SelectedPet);
+            await Shell.Current.GoToAsync(".."); // Navigate back
+        }
     }
 }
-

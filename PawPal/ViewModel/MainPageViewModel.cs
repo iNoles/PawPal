@@ -32,62 +32,61 @@ public class MainPageViewModel : BaseViewModel
         set => SetProperty(ref _newPetDateOfBirth, value);
     }
 
-    private ObservableCollection<Pet> _pets = [];
-    public ObservableCollection<Pet> Pets
-    {
-        get => _pets;
-        set => SetProperty(ref _pets, value);
-    }
-
-    private ObservableCollection<Tasks> _upcomingTasks = [];
-    public ObservableCollection<Tasks> UpcomingTasks
-    {
-        get => _upcomingTasks;
-        set => SetProperty(ref _upcomingTasks, value);
-    }
+    public ObservableCollection<Pet> Pets { get; } = new();
+    public ObservableCollection<Tasks> UpcomingTasks { get; } = new();
 
     public Pet? SelectedPet
     {
         get => _selectedPet;
         set
         {
-            SetProperty(ref _selectedPet, value);
-            if (_selectedPet != null)
+            if (SetProperty(ref _selectedPet, value) && _selectedPet != null)
             {
-                LoadTasksForSelectedPet(_selectedPet.Id);
+                _ = LoadTasksForSelectedPet(_selectedPet.Id);
             }
         }
     }
 
-    // Command for inserting a new pet
     public ICommand InsertPetCommand { get; }
 
     public MainPageViewModel(DatabaseService databaseService)
     {
         _databaseService = databaseService;
-
-        LoadPets();
-
-        // Initialize the InsertPetCommand with the method that handles the pet insertion
-        InsertPetCommand = new Command(InsertPet);
+        InsertPetCommand = new Command(async () => await InsertPet());
     }
 
-    private async void LoadPets()
+    public async Task InitializeAsync()
     {
-        Pets = [.. await _databaseService.GetAllPetsAsync()];
+        await LoadPets();
     }
 
-    private async void LoadTasksForSelectedPet(int petId)
+    private async Task LoadPets()
     {
-        // Fetch tasks for the selected pet
+        var pets = await _databaseService.GetAllPetsAsync();
+        Pets.Clear();
+        foreach (var pet in pets)
+        {
+            Pets.Add(pet);
+        }
+    }
+
+    private async Task LoadTasksForSelectedPet(int petId)
+    {
         var tasks = await _databaseService.GetTasksForPetAsync(petId);
+        var filteredTasks = tasks.Where(t => !t.IsCompleted).OrderBy(t => t.ScheduledDate);
 
-        // Filter tasks that are not completed and sort by due date
-        UpcomingTasks = [.. tasks.Where(t => !t.IsCompleted).OrderBy(t => t.ScheduledDate)];
+        UpcomingTasks.Clear();
+        foreach (var task in filteredTasks)
+        {
+            UpcomingTasks.Add(task);
+        }
     }
 
-    private void InsertPet()
+    private async Task InsertPet()
     {
+        if (string.IsNullOrWhiteSpace(NewPetName) || string.IsNullOrWhiteSpace(NewPetSpecies))
+            return;
+
         var newPet = new Pet
         {
             Name = NewPetName,
@@ -95,7 +94,7 @@ public class MainPageViewModel : BaseViewModel
             DateOfBirth = NewPetDateOfBirth
         };
 
-        _databaseService.InsertPetAsync(newPet);
+        await _databaseService.InsertPetAsync(newPet);
         Pets.Add(newPet);
         ClearNewPetFields();
     }
@@ -106,16 +105,4 @@ public class MainPageViewModel : BaseViewModel
         NewPetSpecies = string.Empty;
         NewPetDateOfBirth = DateTime.Now;
     }
-
-    /*private async void OnPetTapped(Pet pet)
-    {
-        // Navigate to the PetDetailsPage with the selected pet's ID
-        if (pet != null)
-        {
-            await Shell.Current.GoToAsync($"petdetails", new Dictionary<string, object>
-            {
-                [nameof(Pet)] = pet
-            });
-        }
-    }*/
 }

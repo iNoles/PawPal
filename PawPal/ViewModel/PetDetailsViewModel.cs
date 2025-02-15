@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using System.Windows.Input;
 using PawPal.Models;
 using PawPal.Services;
+using PawPal.Views;
 
 namespace PawPal.ViewModel;
 
@@ -16,13 +17,13 @@ public class PetDetailsViewModel : BaseViewModel
         get => _selectedPet;
         set
         {
-            if (SetProperty(ref _selectedPet, value))
+            if (SetProperty(ref _selectedPet, value) && _selectedPet != null)
             {
-                // Load tasks when the SelectedPet changes
-                LoadUpcomingTasks();
+                _ = LoadUpcomingTasks(); // Fire and forget to avoid blocking UI
             }
         }
     }
+
 
     private ObservableCollection<Tasks> _upcomingTasks = [];
     public ObservableCollection<Tasks> UpcomingTasks
@@ -45,18 +46,23 @@ public class PetDetailsViewModel : BaseViewModel
         ViewMedicalRecordsCommand = new Command(async () => await ViewMedicalRecords());
     }
 
-    private async void LoadUpcomingTasks()
+    private async Task LoadUpcomingTasks()
     {
         if (SelectedPet == null)
             return;
 
-        // Fetch tasks for the selected pet
-        var tasks = await _databaseService.GetTasksForPetAsync(SelectedPet.Id);
-
-        // Filter upcoming tasks
-        var filteredTasks = tasks.Where(t => !t.IsCompleted).OrderBy(t => t.ScheduledDate);
-        UpcomingTasks = [.. filteredTasks];
+        try
+        {
+            var tasks = await _databaseService.GetTasksForPetAsync(SelectedPet.Id);
+            var filteredTasks = tasks.Where(t => !t.IsCompleted).OrderBy(t => t.ScheduledDate);
+            UpcomingTasks = [.. filteredTasks];
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading upcoming tasks: {ex.Message}");
+        }
     }
+
 
     private async Task EditProfile()
     {
@@ -64,7 +70,7 @@ public class PetDetailsViewModel : BaseViewModel
             return;
 
         // Navigate to the Edit Profile page
-        await Shell.Current.GoToAsync($"editprofile?id={SelectedPet.Id}");
+        await Shell.Current.GoToAsync($"{nameof(TaskPage)}?editprofile?id={SelectedPet.Id}");
     }
 
     private async Task ViewMedicalRecords()
@@ -73,6 +79,7 @@ public class PetDetailsViewModel : BaseViewModel
             return;
 
         // Navigate to the Medical Records page
-        await Shell.Current.GoToAsync($"medicalrecords?id={SelectedPet.Id}");
+        await Shell.Current.GoToAsync($"{nameof(MedicalRecordsPage)}?id={SelectedPet.Id}");
+
     }
 }

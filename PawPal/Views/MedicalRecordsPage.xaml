@@ -10,13 +10,11 @@
     <ScrollView>
         <VerticalStackLayout Padding="20" Spacing="20">
 
-            <!-- Header -->
             <Label Text="Medical Records"
                    FontSize="26"
                    FontAttributes="Bold"
                    HorizontalOptions="Center" />
 
-            <!-- Selected Pet Info -->
             <Label Text="Manage medical records for the selected pet."
                    FontSize="14"
                    TextColor="Gray"
@@ -24,19 +22,11 @@
 
             <!-- Medical Records List -->
             <CollectionView ItemsSource="{Binding MedicalRecords}"
+                            SelectionMode="Single"
                             SelectedItem="{Binding SelectedMedicalRecord, Mode=TwoWay}">
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="models:MedicalRecord">
                         <Border Stroke="Gray" StrokeThickness="1" Padding="10" Margin="5">
-                            <Border.StrokeShape>
-                                <RoundRectangle CornerRadius="10" />
-                            </Border.StrokeShape>
-                            <Border.Triggers>
-                                <!-- Change background color when item is selected -->
-                                <DataTrigger TargetType="Border" Binding="{Binding IsSelected, Source={RelativeSource AncestorType={x:Type CollectionView}}}" Value="True">
-                                    <Setter Property="BackgroundColor" Value="LightGray" />
-                                </DataTrigger>
-                            </Border.Triggers>
                             <VerticalStackLayout Spacing="10">
                                 <Label Text="{Binding RecordType}" FontAttributes="Bold" FontSize="16" />
                                 <Label Text="Date: {Binding RecordDate, StringFormat='{0:MMM dd, yyyy}'}" FontSize="12" TextColor="Gray" />
@@ -49,91 +39,42 @@
                 </CollectionView.ItemTemplate>
             </CollectionView>
 
-            <!-- Form for Adding/Updating Medical Records -->
-            <Border Stroke="Gray" StrokeThickness="1" StrokeShape="RoundRectangle" Padding="20" IsVisible="{Binding IsFormVisible}" BackgroundColor="LightYellow">
-                <VerticalStackLayout Spacing="15">
-                    <Label Text="Add/Update Medical Record" FontSize="18" FontAttributes="Bold" />
+            <!-- Buttons -->
+            <HorizontalStackLayout HorizontalOptions="Center" Spacing="10">
+                <Button Text="Add Record" Command="{Binding AddMedicalRecordCommand}" />
+                <Button Text="Edit Record" Command="{Binding UpdateMedicalRecordCommand}" IsEnabled="{Binding SelectedMedicalRecord, Converter={StaticResource NullToBooleanConverter}}" />
+                <Button Text="Delete Record" Command="{Binding DeleteMedicalRecordCommand}" IsEnabled="{Binding SelectedMedicalRecord, Converter={StaticResource NullToBooleanConverter}}" />
+            </HorizontalStackLayout>
 
-                   <Border Stroke="LightGray"  StrokeThickness="1" Padding="10" Margin="5">
-                        <Border.StrokeShape>
-                            <RoundRectangle CornerRadius="5" />
-                        </Border.StrokeShape>
-                        <Entry
-                            Placeholder="Record Type (e.g., Vaccination, Checkup)" 
-                            Text="{Binding EditableMedicalRecord.RecordType}" />
-                    </Border>
+            <!-- Medical Record Form -->
+            <Border Stroke="Gray" StrokeThickness="1" Padding="20" IsVisible="{Binding IsFormVisible}">
+                <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto"
+                      ColumnDefinitions="*,*"
+                      ColumnSpacing="10"
+                      RowSpacing="10">
                     
-                    <Border Stroke="LightGray" StrokeThickness="1" Padding="0"  Margin="5">
-                        <Border.StrokeShape>
-                            <RoundRectangle CornerRadius="5" />
-                        </Border.StrokeShape>
-                        <Editor
-                            Placeholder="Notes" 
-                            Text="{Binding EditableMedicalRecord.Notes}"
-                            AutoSize="TextChanges" />
-                    </Border>
-                    
-                    <Border Stroke="LightGray" StrokeThickness="1" Padding="10"  Margin="5">
-                        <Border.StrokeShape>
-                            <RoundRectangle CornerRadius="5" />
-                        </Border.StrokeShape>
-                        <Entry
-                            Placeholder="Prescriptions (if any)"
-                            Text="{Binding EditableMedicalRecord.Prescriptions}" />
-                    </Border>
-                    
-                    <Border Stroke="LightGray" StrokeThickness="1" Padding="10"  Margin="5">
-                        <Border.StrokeShape>
-                            <RoundRectangle CornerRadius="5" />
-                        </Border.StrokeShape>
-                        <Entry
-                            Placeholder="Doctor's Name"
-                            Text="{Binding EditableMedicalRecord.Doctor}"/>
-                    </Border>
+                    <Label Text="Record Type:" Grid.Row="0" Grid.Column="0"/>
+                    <Entry Text="{Binding EditableMedicalRecord.RecordType, Mode=TwoWay}" Grid.Row="0" Grid.Column="1"/>
 
-                    <DatePicker Date="{Binding EditableMedicalRecord.RecordDate}" />
+                    <Label Text="Notes:" Grid.Row="1" Grid.Column="0"/>
+                    <Editor Text="{Binding EditableMedicalRecord.Notes, Mode=TwoWay}" Grid.Row="1" Grid.Column="1" AutoSize="TextChanges"/>
 
-                    <Grid ColumnDefinitions="*, *, *" HorizontalOptions="Fill" RowSpacing="10" ColumnSpacing="10">
-                        <Button Text="Save" 
-                                Command="{Binding SaveMedicalRecordCommand}" 
-                                Grid.Column="0" 
-                                BackgroundColor="LightGreen" 
-                                BorderColor="Gray" 
-                                CornerRadius="8" />
+                    <Label Text="Prescriptions:" Grid.Row="2" Grid.Column="0"/>
+                    <Entry Text="{Binding EditableMedicalRecord.Prescriptions, Mode=TwoWay}" Grid.Row="2" Grid.Column="1"/>
 
-                        <Button Text="Cancel" 
-                                Command="{Binding CancelEditCommand}" 
-                                Grid.Column="1" 
-                                BackgroundColor="LightGray" 
-                                BorderColor="Gray" 
-                                CornerRadius="8" />
-                    </Grid>
-                </VerticalStackLayout>
+                    <Label Text="Doctor:" Grid.Row="3" Grid.Column="0"/>
+                    <Entry Text="{Binding EditableMedicalRecord.Doctor, Mode=TwoWay}" Grid.Row="3" Grid.Column="1"/>
+
+                    <Label Text="Date:" Grid.Row="4" Grid.Column="0"/>
+                    <DatePicker Date="{Binding EditableMedicalRecord.RecordDate, Mode=TwoWay}" Grid.Row="4" Grid.Column="1"/>
+
+                    <!-- Buttons -->
+                    <HorizontalStackLayout Grid.Row="5" Grid.ColumnSpan="2" Spacing="10" HorizontalOptions="Center">
+                        <Button Text="Save" Command="{Binding SaveMedicalRecordCommand}" />
+                        <Button Text="Cancel" Command="{Binding CancelEditCommand}" />
+                    </HorizontalStackLayout>
+                </Grid>
             </Border>
-
-            <!-- Action Buttons -->
-            <Grid ColumnDefinitions="*, *, *" HorizontalOptions="Fill" RowSpacing="10" ColumnSpacing="10">
-                <Button Text="Add Record"
-                    Command="{Binding AddMedicalRecordCommand}"
-                    Grid.Column="0"
-                    BackgroundColor="SkyBlue"
-                    BorderColor="Gray"
-                    CornerRadius="8" />
-                <Button Text="Update Record"
-                    Command="{Binding UpdateMedicalRecordCommand}" 
-                    Grid.Column="1"
-                    BackgroundColor="LightYellow"
-                    BorderColor="Gray"
-                    CornerRadius="8"
-                    IsEnabled="{Binding SelectedMedicalRecord, Converter={StaticResource NullToBoolConverter}}" />
-                <Button Text="Delete Record"
-                    Command="{Binding DeleteMedicalRecordCommand}"
-                    Grid.Column="2"
-                    BackgroundColor="LightCoral"
-                    BorderColor="Gray"
-                    CornerRadius="8"
-                    IsEnabled="{Binding SelectedMedicalRecord, Converter={StaticResource NullToBoolConverter}}" />
-            </Grid>
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

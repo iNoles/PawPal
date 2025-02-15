@@ -8,7 +8,6 @@
     <ScrollView>
         <VerticalStackLayout Padding="20" Spacing="15">
             
-            <!-- Pet Assignment -->
             <Border Stroke="Gray" StrokeThickness="2" Padding="15">
                 <Border.StrokeShape>
                     <RoundRectangle CornerRadius="12" />
@@ -17,12 +16,12 @@
                     <Label Text="Assign Pet" FontSize="18" FontAttributes="Bold" TextColor="DarkBlue"/>
                     <Picker Title="Select Pet"
                             ItemsSource="{Binding Pets}"
-                            SelectedItem="{Binding SelectedPetId}"
+                            SelectedItem="{Binding SelectedPet}"
+                            ItemDisplayBinding="{Binding Name}"
                             BackgroundColor="LightGray" />
                 </VerticalStackLayout>
             </Border>
 
-            <!-- Task Type -->
             <Border Stroke="Gray" StrokeThickness="2" Padding="15">
                 <Border.StrokeShape>
                     <RoundRectangle CornerRadius="12" />
@@ -36,7 +35,6 @@
                 </VerticalStackLayout>
             </Border>
 
-            <!-- Date and Time -->
             <Border Stroke="Gray" StrokeThickness="2" Padding="15">
                 <Border.StrokeShape>
                     <RoundRectangle CornerRadius="12" />
@@ -48,40 +46,17 @@
                 </VerticalStackLayout>
             </Border>
 
-            <!-- Notes -->
-            <Border Stroke="Gray" StrokeThickness="2" BackgroundColor="White" Padding="15">
-                <Border.StrokeShape>
-                    <RoundRectangle CornerRadius="12" />
-                </Border.StrokeShape>
-                <VerticalStackLayout Spacing="8">
-                    <Label Text="Notes" FontSize="18" FontAttributes="Bold" TextColor="DarkBlue"/>
-                    <Editor Placeholder="Add any additional details"
-                            AutoSize="TextChanges"
-                            Text="{Binding Notes}"
-                            BackgroundColor="LightGray" />
-                </VerticalStackLayout>
-            </Border>
-
-             <!-- Recurrence Section Toggle -->
             <HorizontalStackLayout Spacing="15" Padding="10">
                 <Label Text="Recurring Task" FontSize="18" FontAttributes="Bold" VerticalOptions="Center" />
-                <Switch IsToggled="{Binding NewTask.IsRecurring}" VerticalOptions="Center" />
+                <Switch IsToggled="{Binding IsRecurring}" VerticalOptions="Center" />
             </HorizontalStackLayout>
 
-            <!-- Recurrence Details -->
-            <StackLayout IsVisible="{Binding NewTask.IsRecurring}" Padding="15" Spacing="15">
-                <Picker ItemsSource="{Binding RecurrenceTypes}" SelectedItem="{Binding NewTask.RecurrenceType}" />
-                <Entry Keyboard="Numeric" Placeholder="Interval (e.g., 3 days)" Text="{Binding NewTask.RecurrenceInterval}" />
-                <DatePicker Date="{Binding NewTask.EndDate}" />
+            <StackLayout IsVisible="{Binding IsRecurring}" Padding="15" Spacing="15">
+                <Picker ItemsSource="{Binding RecurrenceTypes}" SelectedItem="{Binding RecurrenceType}" />
+                <Entry Keyboard="Numeric" Placeholder="Interval (e.g., 3 days)" Text="{Binding RecurrenceInterval}" />
+                <DatePicker Date="{Binding EndDate}" />
             </StackLayout>
 
-            <!-- Is Completed -->
-            <HorizontalStackLayout Spacing="15" Padding="10">
-                <Label Text="Completed?" FontSize="18" FontAttributes="Bold" VerticalOptions="Center" />
-                <CheckBox IsChecked="{Binding IsCompleted}" VerticalOptions="Center" />
-            </HorizontalStackLayout>
-
-            <!-- Save Button -->
             <Button Text="Save Task"
                     Command="{Binding SaveTaskCommand}"
                     IsEnabled="{Binding CanSave}"

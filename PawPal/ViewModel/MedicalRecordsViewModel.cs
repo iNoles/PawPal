@@ -9,54 +9,11 @@ public class MedicalRecordsViewModel : BaseViewModel
 {
     private readonly DatabaseService _databaseService;
 
-    private int _selectedPetId;
-    public int SelectedPetId
-    {
-        get => _selectedPetId;
-        set
-        {
-            if (SetProperty(ref _selectedPetId, value))
-            {
-                LoadMedicalRecords();
-            }
-        }
-    }
-
-    private ObservableCollection<MedicalRecord> _medicalRecords = [];
-    public ObservableCollection<MedicalRecord> MedicalRecords
-    {
-        get => _medicalRecords;
-        set => SetProperty(ref _medicalRecords, value);
-    }
-
-    private MedicalRecord? _selectedMedicalRecord;
-    public MedicalRecord? SelectedMedicalRecord
-    {
-        get => _selectedMedicalRecord;
-        set
-        {
-            if (SetProperty(ref _selectedMedicalRecord, value))
-            {
-                // Notify the commands to recheck their CanExecute status
-                ((Command)UpdateMedicalRecordCommand).ChangeCanExecute();
-                ((Command)DeleteMedicalRecordCommand).ChangeCanExecute();
-            }
-        }
-    }
-
-    private MedicalRecord _editableMedicalRecord = new();
-    public MedicalRecord EditableMedicalRecord
-    {
-        get => _editableMedicalRecord;
-        set => SetProperty(ref _editableMedicalRecord, value);
-    }
-
-    private bool _isFormVisible;
-    public bool IsFormVisible
-    {
-        get => _isFormVisible;
-        set => SetProperty(ref _isFormVisible, value);
-    }
+    public int SelectedPetId { get; set; }
+    public ObservableCollection<MedicalRecord> MedicalRecords { get; private set; } = [];
+    public MedicalRecord? SelectedMedicalRecord { get; private set; }
+    public MedicalRecord EditableMedicalRecord { get; private set; } = new();
+    public bool IsFormVisible { get; private set; }
 
     public ICommand AddMedicalRecordCommand { get; }
     public ICommand UpdateMedicalRecordCommand { get; }
@@ -69,29 +26,28 @@ public class MedicalRecordsViewModel : BaseViewModel
         _databaseService = databaseService;
 
         AddMedicalRecordCommand = new Command(ShowAddMedicalRecordForm);
-        UpdateMedicalRecordCommand = new Command(ShowUpdateMedicalRecordForm, CanExecuteMedicalRecordCommand);
-        DeleteMedicalRecordCommand = new Command(DeleteMedicalRecord, CanExecuteMedicalRecordCommand);
+        UpdateMedicalRecordCommand = new Command(ShowUpdateMedicalRecordForm, () => SelectedMedicalRecord != null);
+        DeleteMedicalRecordCommand = new Command(DeleteMedicalRecord, () => SelectedMedicalRecord != null);
         CancelEditCommand = new Command(CancelEdit);
         SaveMedicalRecordCommand = new Command(SaveMedicalRecord);
     }
 
-    private async void LoadMedicalRecords()
+    public async void LoadMedicalRecords()
     {
         if (SelectedPetId > 0)
         {
             var records = await _databaseService.GetMedicalRecordsForPetAsync(SelectedPetId);
             MedicalRecords = [.. records];
+            OnPropertyChanged(nameof(MedicalRecords));
         }
     }
 
     private void ShowAddMedicalRecordForm()
     {
-        EditableMedicalRecord = new MedicalRecord
-        {
-            PetId = SelectedPetId,
-            RecordDate = DateTime.Now
-        };
+        EditableMedicalRecord = new MedicalRecord { PetId = SelectedPetId, RecordDate = DateTime.Now };
         IsFormVisible = true;
+        OnPropertyChanged(nameof(EditableMedicalRecord));
+        OnPropertyChanged(nameof(IsFormVisible));
     }
 
     private void ShowUpdateMedicalRecordForm()
@@ -109,42 +65,35 @@ public class MedicalRecordsViewModel : BaseViewModel
                 Doctor = SelectedMedicalRecord.Doctor
             };
             IsFormVisible = true;
+            OnPropertyChanged(nameof(EditableMedicalRecord));
+            OnPropertyChanged(nameof(IsFormVisible));
         }
     }
 
-    private void SaveMedicalRecord()
+    private async void SaveMedicalRecord()
     {
         if (EditableMedicalRecord.Id == 0)
-        {
-            // Add new record
-            _databaseService.InsertMedicalRecordAsync(EditableMedicalRecord);
-        }
+            await _databaseService.InsertMedicalRecordAsync(EditableMedicalRecord);
         else
-        {
-            // Update existing record
-            _databaseService.UpdateMedicalRecordAsync(EditableMedicalRecord);
-        }
+            await _databaseService.UpdateMedicalRecordAsync(EditableMedicalRecord);
 
         LoadMedicalRecords();
         IsFormVisible = false;
+        OnPropertyChanged(nameof(IsFormVisible));
     }
 
     private void CancelEdit()
     {
         IsFormVisible = false;
+        OnPropertyChanged(nameof(IsFormVisible));
     }
 
-    private void DeleteMedicalRecord()
+    private async void DeleteMedicalRecord()
     {
         if (SelectedMedicalRecord != null)
         {
-            _databaseService.DeleteMedicalRecordAsync(SelectedMedicalRecord);
+            await _databaseService.DeleteMedicalRecordAsync(SelectedMedicalRecord);
             LoadMedicalRecords();
         }
-    }
-
-    private bool CanExecuteMedicalRecordCommand()
-    {
-        return SelectedMedicalRecord != null;
     }
 }

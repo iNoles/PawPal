@@ -7,47 +7,49 @@
              x:Class="PawPal.Views.VetContactsPage"
              Title="Vet Contacts">
 
-    <ScrollView>
-        <VerticalStackLayout Padding="15" Spacing="10">
+    <RefreshView Command="{Binding LoadVetContactsCommand}">
+        <ScrollView>
+            <VerticalStackLayout Padding="15" Spacing="10">
 
-            <!-- Header -->
-            <Label Text="Veterinarian Contacts" 
-                   FontSize="22" 
-                   FontAttributes="Bold" 
-                   HorizontalOptions="Center" 
-                   Padding="5" />
+                <!-- Header -->
+                <Label Text="Veterinarian Contacts" 
+                       FontSize="22" 
+                       FontAttributes="Bold" 
+                       HorizontalOptions="Center" 
+                       Padding="5" />
 
-            <!-- Vet Contacts List -->
-            <CollectionView ItemsSource="{Binding VetContacts}"
-                            SelectionMode="Single"
-                            SelectedItem="{Binding SelectedVetContact, Mode=TwoWay}">
-                <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="local:VetContact">
-                        <Border Margin="5" Stroke="Gray" StrokeThickness="2" Padding="12" BackgroundColor="White">
-                            <Border.StrokeShape>
-                                <RoundRectangle CornerRadius="10" />
-                            </Border.StrokeShape>
-                            <VerticalStackLayout Spacing="5">
-                                <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="18" TextColor="DarkBlue"/>
-                                <Label Text="{Binding PhoneNumber}" FontSize="14" TextColor="Black"/>
-                                <Label Text="{Binding Email}" FontSize="14" TextColor="DarkSlateGray"/>
-                                <Label Text="{Binding Address}" FontSize="14" TextColor="Gray"/>
-                            </VerticalStackLayout>
-                        </Border>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
+                <!-- Vet Contacts List -->
+                <CollectionView ItemsSource="{Binding VetContacts}"
+                                SelectionMode="Single"
+                                SelectedItem="{Binding SelectedVetContact, Mode=TwoWay}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="local:VetContact">
+                            <Border Margin="5" Stroke="Gray" StrokeThickness="2" Padding="12" BackgroundColor="White">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="10" />
+                                </Border.StrokeShape>
+                                <VerticalStackLayout Spacing="5">
+                                    <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="18" TextColor="DarkBlue"/>
+                                    <Label Text="{Binding PhoneNumber}" FontSize="14" TextColor="Black"/>
+                                    <Label Text="{Binding Email}" FontSize="14" TextColor="DarkSlateGray"/>
+                                    <Label Text="{Binding Address}" FontSize="14" TextColor="Gray"/>
+                                </VerticalStackLayout>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
 
-            <!-- Add Contact Button -->
-            <Button Text="Add Vet Contact"
-                    Command="{Binding AddVetContactCommand}"
-                    BackgroundColor="DodgerBlue"
-                    TextColor="White"
-                    CornerRadius="10"
-                    Padding="12"
-                    FontSize="18"
-                    HorizontalOptions="Fill" />
-            
-        </VerticalStackLayout>
-    </ScrollView>
+                <!-- Add Contact Button -->
+                <Button Text="Add Vet Contact"
+                        Command="{Binding AddVetContactCommand}"
+                        BackgroundColor="DodgerBlue"
+                        TextColor="White"
+                        CornerRadius="10"
+                        Padding="12"
+                        FontSize="18"
+                        HorizontalOptions="Fill" />
+                
+            </VerticalStackLayout>
+        </ScrollView>
+    </RefreshView>
 </ContentPage>

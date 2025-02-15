@@ -24,29 +24,39 @@ public class VetContactsViewModel : BaseViewModel
         {
             if (SetProperty(ref _selectedVetContact, value) && value != null)
             {
-                // Handle selection logic (e.g., navigate to detail page)
+                OnVetContactSelected(value);
             }
         }
     }
 
     public Command AddVetContactCommand { get; }
+    public Command LoadVetContactsCommand { get; }
 
     public VetContactsViewModel(DatabaseService databaseService)
     {
         _databaseService = databaseService;
-        LoadVetContacts();
 
         AddVetContactCommand = new Command(OnAddVetContact);
+        LoadVetContactsCommand = new Command(async () => await LoadVetContacts());
+
+        _ = LoadVetContacts(); // Fire and forget, stays on main thread
     }
 
-    private async void LoadVetContacts()
+    private async Task LoadVetContacts()
     {
-        VetContacts = [.. await _databaseService.GetAllVetContactsAsync()];
+        var contacts = await _databaseService.GetAllVetContactsAsync();
+        VetContacts = [.. contacts];
+        OnPropertyChanged(nameof(VetContacts)); // Ensure UI updates
     }
 
     private async void OnAddVetContact()
     {
-        // Navigate to AddEditVetContactPage
         await Shell.Current.GoToAsync(nameof(AddEditVetContactPage));
+    }
+
+    private async void OnVetContactSelected(VetContact vetContact)
+    {
+        var parameters = new Dictionary<string, object> { { "VetContact", vetContact } };
+        await Shell.Current.GoToAsync(nameof(AddEditVetContactPage), parameters);
     }
 }

@@ -1,16 +1,16 @@
+namespace PawPal.ViewModel;
+
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 using PawPal.Models;
 using PawPal.Services;
-
-namespace PawPal.ViewModel;
 
 public class TaskPageViewModel : BaseViewModel
 {
     private readonly DatabaseService _databaseService;
     private readonly bool _isEditMode;
 
-    private int _selectedPetId;
+    private Pet? _selectedPet;
     private List<Pet> _pets = [];
 
     public ObservableCollection<string> TaskTypes { get; } =
@@ -18,18 +18,20 @@ public class TaskPageViewModel : BaseViewModel
         "Feeding", "Grooming", "Vet Appointment", "Exercise", "Other"
     ];
 
-    // Recurrence Types (e.g., daily, weekly)
     public ObservableCollection<string> RecurrenceTypes { get; } =
     [
         "Daily", "Weekly", "Monthly"
     ];
 
-    // Task Properties
     private string? _selectedTaskType;
     public string? SelectedTaskType
     {
         get => _selectedTaskType;
-        set => SetProperty(ref _selectedTaskType, value);
+        set
+        {
+            SetProperty(ref _selectedTaskType, value);
+            NotifyCanSaveChanged();
+        }
     }
 
     private DateTime _taskDate = DateTime.Today;
@@ -60,20 +62,25 @@ public class TaskPageViewModel : BaseViewModel
         set => SetProperty(ref _isCompleted, value);
     }
 
-    public int SelectedPetId
+    public Pet? SelectedPet
     {
-        get => _selectedPetId;
-        set => SetProperty(ref _selectedPetId, value);
+        get => _selectedPet;
+        set
+        {
+            SetProperty(ref _selectedPet, value);
+            SelectedPetId = value?.Id ?? 0;
+            NotifyCanSaveChanged();
+        }
     }
 
-    // List of pets (you should populate this with actual pets in your application)
+    public int SelectedPetId { get; private set; }
+
     public List<Pet> Pets
     {
         get => _pets;
         set => SetProperty(ref _pets, value);
     }
 
-    // Recurrence properties
     private bool _isRecurring = false;
     public bool IsRecurring
     {
@@ -92,23 +99,20 @@ public class TaskPageViewModel : BaseViewModel
     public int RecurrenceInterval
     {
         get => _recurrenceInterval;
-        set  => SetProperty(ref _recurrenceInterval, value);
+        set => SetProperty(ref _recurrenceInterval, value);
     }
 
-    private DateTime _endDate = DateTime.Today.AddMonths(1); // Default to one month from today
+    private DateTime _endDate = DateTime.Today.AddMonths(1);
     public DateTime EndDate
     {
         get => _endDate;
         set => SetProperty(ref _endDate, value);
     }
 
-    // Command for saving the task
     public ICommand SaveTaskCommand { get; }
 
-    // Validation property to enable the Save button
     public bool CanSave => !string.IsNullOrWhiteSpace(SelectedTaskType) && SelectedPetId != 0;
 
-    // Constructor
     public TaskPageViewModel(DatabaseService databaseService, Tasks? existingTask = null)
     {
         _databaseService = databaseService;
@@ -116,7 +120,6 @@ public class TaskPageViewModel : BaseViewModel
 
         if (_isEditMode && existingTask != null)
         {
-            // Populate fields with the existing task details for editing
             SelectedTaskType = existingTask.Title;
             TaskDate = existingTask.ScheduledDate.Date;
             TaskTime = existingTask.ScheduledDate.TimeOfDay;
@@ -124,7 +127,6 @@ public class TaskPageViewModel : BaseViewModel
             IsCompleted = existingTask.IsCompleted;
             SelectedPetId = existingTask.PetId;
 
-            // Load recurrence data if editing a recurring task
             IsRecurring = existingTask.IsRecurring;
             RecurrenceType = existingTask.RecurrenceType;
             RecurrenceInterval = existingTask.RecurrenceInterval;
@@ -137,33 +139,26 @@ public class TaskPageViewModel : BaseViewModel
 
     private async Task SaveTask()
     {
-        // Combine date and time
         var scheduledDateTime = TaskDate.Add(TaskTime);
-        
-        // Validate the scheduled date
+
         if (scheduledDateTime < DateTime.Now)
         {
-            // Show an error to the user (you could display a message in the UI)
             Console.WriteLine("Scheduled date cannot be in the past.");
             return;
         }
-        
-        // Validate the recurrence end date
+
         if (EndDate < DateTime.Now)
         {
-            // Show an error to the user (you could display a message in the UI)
             Console.WriteLine("End date cannot be in the past.");
             return;
         }
-        
-        // Validate recurrence interval
+
         if (IsRecurring && RecurrenceInterval <= 0)
         {
-            // Show an error to the user (you could display a message in the UI)
             Console.WriteLine("Recurrence interval must be a positive number.");
             return;
         }
-        
+
         var task = new Tasks
         {
             Title = SelectedTaskType ?? "Task",
@@ -175,8 +170,7 @@ public class TaskPageViewModel : BaseViewModel
             RecurrenceInterval = RecurrenceInterval,
             EndDate = EndDate
         };
-        
-        // Schedule notifications based on recurrence
+
         if (IsRecurring)
         {
             await NotificationService.ScheduleRecurringNotifications(task);
@@ -185,7 +179,7 @@ public class TaskPageViewModel : BaseViewModel
         {
             await NotificationService.ScheduleNotificationAsync(task);
         }
-        
+
         if (_isEditMode)
         {
             await _databaseService.UpdateTaskAsync(task);
@@ -194,8 +188,13 @@ public class TaskPageViewModel : BaseViewModel
         {
             await _databaseService.InsertTasksAsync(task);
         }
-        
-        // Navigate back to the previous page
+
         await Shell.Current.GoToAsync("..");
+    }
+
+    private void NotifyCanSaveChanged()
+    {
+        OnPropertyChanged(nameof(CanSave));
+        ((Command)SaveTaskCommand).ChangeCanExecute();
     }
 }
