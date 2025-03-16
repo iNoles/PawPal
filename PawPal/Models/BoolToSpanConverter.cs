@@ -1,16 +1,13 @@
 using System.Globalization;
 
-namespace PawPal;
+namespace PawPal.Models;
 
-public class BoolToViewConverter : IValueConverter
+public class BoolToSpanConverter : IValueConverter
 {
     public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
-        if (value is bool v)
-        {
-            return v ? "Switch to Monthly View" : "Switch to Weekly View";
-        }
-        return "Invalid View";
+        // the number of columns (7 for weekly and monthly)
+        return 7;
     }
 
     public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)

@@ -6,6 +6,12 @@
              x:DataType="vm:VetContactsViewModel"
              x:Class="PawPal.Views.VetContactsPage"
              Title="Vet Contacts">
+    
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <local:EmergencyColorConverter x:Key="EmergencyColorConverter"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
 
     <RefreshView Command="{Binding LoadVetContactsCommand}">
         <ScrollView>
@@ -20,40 +26,46 @@
 
                 <!-- Vet Contacts List -->
                 <CollectionView ItemsSource="{Binding VetContacts}"
-                    SelectionMode="Single"
-                    SelectedItem="{Binding SelectedVetContact, Mode=TwoWay}">
+                                SelectionMode="Single"
+                                SelectedItem="{Binding SelectedVetContact, Mode=TwoWay}">
                     
                     <CollectionView.ItemTemplate>
                         <DataTemplate x:DataType="local:VetContact">
-                            <Border Margin="5" Stroke="Gray" StrokeThickness="2" Padding="12" BackgroundColor="White">
+                            <Border Margin="5" Stroke="Gray" StrokeThickness="2" Padding="12"
+                                    BackgroundColor="{Binding IsEmergency, Converter={StaticResource EmergencyColorConverter}}">
                                 <Border.StrokeShape>
                                     <RoundRectangle CornerRadius="10" />
                                 </Border.StrokeShape>
-                            <VerticalStackLayout Spacing="5">
-                                <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="18" TextColor="DarkBlue"/>
                                 
-                                <!-- Clickable Phone -->
-                                <Label Text="{Binding PhoneNumber}" FontSize="14" TextColor="Blue">
-                                    <Label.GestureRecognizers>
-                                        <TapGestureRecognizer Command="{Binding Source={x:Reference Page}, Path=BindingContext.CallVetCommand}" CommandParameter="{Binding PhoneNumber}" />
-                                    </Label.GestureRecognizers>
-                                </Label>
-                                
-                                <!-- Clickable Email -->
-                                <Label Text="{Binding Email}" FontSize="14" TextColor="Blue">
-                                    <Label.GestureRecognizers>
-                                        <TapGestureRecognizer Command="{Binding Source={x:Reference Page}, Path=BindingContext.EmailVetCommand}"  CommandParameter="{Binding Email}" />
-                                    </Label.GestureRecognizers>
-                                </Label>
-
-                    <Label Text="{Binding Address}" FontSize="14" TextColor="Gray"/>
-                </VerticalStackLayout>
-            </Border>
-        </DataTemplate>
-    </CollectionView.ItemTemplate>
-</CollectionView>
-
-
+                                <VerticalStackLayout Spacing="5">
+                                    <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="18" />
+                                    <Label Text="{Binding PhoneNumber}" />
+                                    <Label Text="{Binding Email}" FontSize="14" />
+                                    <Label Text="{Binding Address}" FontSize="14" />
+                                    
+                                    <!-- Call, Email, and Navigate Buttons -->
+                                    <HorizontalStackLayout Spacing="10">
+                                        <Button Text="Call"
+                                                Command="{Binding Path=BindingContext.CallVetCommand, Source={x:Reference VetContactsPage}}"
+                                                CommandParameter="{Binding}"
+                                                BackgroundColor="Green" TextColor="White"/>
+                                        
+                                        <Button Text="Email"
+                                                Command="{Binding Path=BindingContext.EmailVetCommand, Source={x:Reference VetContactsPage}}"
+                                                CommandParameter="{Binding}"
+                                                BackgroundColor="Blue" TextColor="White"/>
+                                        
+                                        <Button Text="Navigate"
+                                                Command="{Binding Path=BindingContext.NavigateToVetCommand, Source={x:Reference VetContactsPage}}"
+                                                CommandParameter="{Binding}"
+                                                BackgroundColor="Orange" TextColor="White"/>
+                                    </HorizontalStackLayout>
+                                </VerticalStackLayout>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+                
                 <!-- Add Contact Button -->
                 <Button Text="Add Vet Contact"
                         Command="{Binding AddVetContactCommand}"
@@ -63,7 +75,6 @@
                         Padding="12"
                         FontSize="18"
                         HorizontalOptions="Fill" />
-                
             </VerticalStackLayout>
         </ScrollView>
     </RefreshView>

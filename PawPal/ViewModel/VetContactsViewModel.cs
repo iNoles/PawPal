@@ -1,5 +1,4 @@
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using PawPal.Models;
 using PawPal.Services;
 using PawPal.Views;
@@ -32,8 +31,9 @@ public class VetContactsViewModel : BaseViewModel
 
     public Command AddVetContactCommand { get; }
     public Command LoadVetContactsCommand { get; }
-    public Command<string> CallVetCommand { get; }
-    public Command<string> EmailVetCommand { get; }
+    public Command CallVetCommand { get; }
+    public Command EmailVetCommand { get; }
+    public Command NavigateToVetCommand { get; }
 
     public VetContactsViewModel(DatabaseService databaseService)
     {
@@ -41,9 +41,9 @@ public class VetContactsViewModel : BaseViewModel
 
         AddVetContactCommand = new Command(OnAddVetContact);
         LoadVetContactsCommand = new Command(async () => await LoadVetContacts());
-
-        CallVetCommand = new Command<string>(OnCallVet);
-        EmailVetCommand = new Command<string>(OnEmailVet);
+        CallVetCommand = new Command<VetContact>(async (vet) => await CallVet(vet));
+        EmailVetCommand = new Command<VetContact>(async (vet) => await EmailVet(vet));
+        NavigateToVetCommand = new Command<VetContact>(async (vet) => await NavigateToVet(vet));
 
         _ = LoadVetContacts(); // Fire and forget, stays on main thread
     }
@@ -51,49 +51,42 @@ public class VetContactsViewModel : BaseViewModel
     private async Task LoadVetContacts()
     {
         var contacts = await _databaseService.GetAllVetContactsAsync();
-        VetContacts = [.. contacts];
-        OnPropertyChanged(nameof(VetContacts)); // Ensure UI updates
+        VetContacts = [.. contacts.OrderByDescending(c => c.IsEmergency)];
+        OnPropertyChanged(nameof(VetContacts)); 
     }
 
-    private async void OnAddVetContact()
+    private static async void OnAddVetContact()
     {
         await Shell.Current.GoToAsync(nameof(AddEditVetContactPage));
     }
 
-    private async void OnVetContactSelected(VetContact vetContact)
+    private static async void OnVetContactSelected(VetContact vetContact)
     {
         var parameters = new Dictionary<string, object> { { "VetContact", vetContact } };
         await Shell.Current.GoToAsync(nameof(AddEditVetContactPage), parameters);
     }
 
-    private void OnCallVet(string phoneNumber)
+    private static async Task CallVet(VetContact vet)
     {
-        if (!string.IsNullOrWhiteSpace(phoneNumber))
+        if (!string.IsNullOrWhiteSpace(vet.PhoneNumber))
         {
-            try
-            {
-                Launcher.OpenAsync($"tel:{phoneNumber}");
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Unable to make a call: {ex.Message}");
-            }
+            await Launcher.OpenAsync(new Uri($"tel:{vet.PhoneNumber}"));
         }
     }
-
-    private void OnEmailVet(string email)
+    
+    private static async Task EmailVet(VetContact vet)
     {
-        if (!string.IsNullOrWhiteSpace(email))
+        if (!string.IsNullOrWhiteSpace(vet.Email))
         {
-            try
-            {
-                Launcher.OpenAsync($"mailto:{email}");
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Unable to open email client: {ex.Message}");
-            }
+            await Launcher.OpenAsync(new Uri($"mailto:{vet.Email}"));
         }
-
+    }
+    
+    private static async Task NavigateToVet(VetContact vet)
+    {
+        if (!string.IsNullOrWhiteSpace(vet.Address))
+        {
+            await Launcher.OpenAsync(new Uri($"https://maps.google.com/?q={vet.Address}"));
+        }
     }
 }

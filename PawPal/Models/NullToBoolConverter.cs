@@ -1,6 +1,6 @@
 using System.Globalization;
 
-namespace PawPal;
+namespace PawPal.Models;
 
 public class NullToBoolConverter : IValueConverter
 {
