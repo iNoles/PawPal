@@ -1,13 +1,15 @@
 using System.Windows.Input;
+using Microsoft.EntityFrameworkCore;
+using PawPal.Data;
 using PawPal.Models;
-using PawPal.Services;
 
 namespace PawPal.ViewModel;
 
 public class AddVetContactViewModel : BaseViewModel
 {
-    private readonly DatabaseService _databaseService;
+    private readonly AppDataContext _context;
     private readonly bool _isEditMode;
+    private readonly VetContact? _existingVetContact;
 
     private string _name = string.Empty;
     public string Name
@@ -64,10 +66,11 @@ public class AddVetContactViewModel : BaseViewModel
 
     public ICommand SaveTaskCommand { get; }
 
-    public AddVetContactViewModel(DatabaseService databaseService, VetContact? existingVetContact = null)
+    public AddVetContactViewModel(AppDataContext context, VetContact? existingVetContact = null)
     {
-        _databaseService = databaseService;
+        _context = context;
         _isEditMode = existingVetContact != null;
+        _existingVetContact = existingVetContact;
 
         if (existingVetContact != null)
         {
@@ -83,24 +86,44 @@ public class AddVetContactViewModel : BaseViewModel
 
     private async Task SaveVetContact()
     {
-        var contact = new VetContact
+        try
         {
-            Name = Name,
-            PhoneNumber = Phone,
-            Email = Email,
-            Address = Address,
-            Notes = Notes
-        };
+            var contact = new VetContact
+            {
+                Name = Name,
+                PhoneNumber = Phone,
+                Email = Email,
+                Address = Address,
+                Notes = Notes
+            };
 
-        if (_isEditMode)
-        {
-            await _databaseService.UpdateVetContactAsync(contact);
-        }
-        else
-        {
-            await _databaseService.InsertVetContactAsync(contact);
-        }
+            if (_isEditMode)
+            {
+                // Fetch the existing VetContact to ensure EF tracks it correctly
+                var existingContact = await _context.VetContacts
+                    .FirstOrDefaultAsync(v => v.Id == (_existingVetContact != null ? _existingVetContact.Id : 0));
+                if (existingContact != null)
+                {
+                    // Update existing contact fields
+                    existingContact.Name = Name;
+                    existingContact.PhoneNumber = Phone;
+                    existingContact.Email = Email;
+                    existingContact.Address = Address;
+                    existingContact.Notes = Notes;
+                }
+            }
+            else
+            {
+                _context.VetContacts.Add(contact); // Add new contact
+            }
 
-        await Shell.Current.GoToAsync("..");
+            await _context.SaveChangesAsync();
+            await Shell.Current.GoToAsync("..");
+        }
+        catch (Exception ex)
+        {
+            // Handle exception (e.g., log it or display a message to the user)
+            Console.WriteLine(ex.Message);
+        }
     }
 }

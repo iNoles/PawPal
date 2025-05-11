@@ -2,17 +2,21 @@ namespace PawPal.ViewModel;
 
 using System.Collections.ObjectModel;
 using System.Windows.Input;
+using PawPal.Data;
 using PawPal.Models;
 using PawPal.Services;
+using System.Threading.Tasks;
+using System;
+using Microsoft.EntityFrameworkCore;
 
 public class TaskPageViewModel : BaseViewModel
 {
-    private readonly DatabaseService _databaseService;
+    private readonly AppDataContext _context;
     private readonly bool _isEditMode;
-
     private Pet? _selectedPet;
     private List<Pet> _pets = [];
 
+    // Task Types and Recurrence Types
     public ObservableCollection<string> TaskTypes { get; } =
     [
         "Feeding", "Grooming", "Vet Appointment", "Exercise", "Other"
@@ -113,9 +117,11 @@ public class TaskPageViewModel : BaseViewModel
 
     public bool CanSave => !string.IsNullOrWhiteSpace(SelectedTaskType) && SelectedPetId != 0;
 
-    public TaskPageViewModel(DatabaseService databaseService, Tasks? existingTask = null)
+    public bool IsBusy { get; private set; }
+
+    public TaskPageViewModel(AppDataContext context, PetTask? existingTask = null)
     {
-        _databaseService = databaseService;
+        _context = context;
         _isEditMode = existingTask != null;
 
         if (_isEditMode && existingTask != null)
@@ -132,6 +138,11 @@ public class TaskPageViewModel : BaseViewModel
             RecurrenceInterval = existingTask.RecurrenceInterval;
             EndDate = existingTask.EndDate;
         }
+        else
+        {
+            // Set default task type if creating new task
+            SelectedTaskType = "Feeding"; // or any default task type
+        }
 
         SaveTaskCommand = new Command(async () => await SaveTask(), () => CanSave);
         PropertyChanged += (_, __) => ((Command)SaveTaskCommand).ChangeCanExecute();
@@ -139,27 +150,36 @@ public class TaskPageViewModel : BaseViewModel
 
     private async Task SaveTask()
     {
+        IsBusy = true;  // Show loading indicator
+        NotifyCanSaveChanged();
+
         var scheduledDateTime = TaskDate.Add(TaskTime);
 
         if (scheduledDateTime < DateTime.Now)
         {
             Console.WriteLine("Scheduled date cannot be in the past.");
+            IsBusy = false;
+            NotifyCanSaveChanged();
             return;
         }
 
         if (EndDate < DateTime.Now)
         {
             Console.WriteLine("End date cannot be in the past.");
+            IsBusy = false;
+            NotifyCanSaveChanged();
             return;
         }
 
         if (IsRecurring && RecurrenceInterval <= 0)
         {
             Console.WriteLine("Recurrence interval must be a positive number.");
+            IsBusy = false;
+            NotifyCanSaveChanged();
             return;
         }
 
-        var task = new Tasks
+        var task = new PetTask
         {
             Title = SelectedTaskType ?? "Task",
             ScheduledDate = scheduledDateTime,
@@ -173,7 +193,21 @@ public class TaskPageViewModel : BaseViewModel
 
         if (IsRecurring)
         {
-            await NotificationService.ScheduleRecurringNotifications(task);
+            // Handle recurring task logic
+            var currentTaskDate = scheduledDateTime;
+            while (currentTaskDate <= EndDate)
+            {
+                await NotificationService.ScheduleNotificationAsync(task);
+
+                // Calculate next occurrence based on the RecurrenceType
+                currentTaskDate = RecurrenceType switch
+                {
+                    "Daily" => currentTaskDate.AddDays(RecurrenceInterval),
+                    "Weekly" => currentTaskDate.AddDays(RecurrenceInterval * 7), // Multiply by 7 to add weeks
+                    "Monthly" => currentTaskDate.AddMonths(RecurrenceInterval),
+                    _ => throw new InvalidOperationException("Invalid recurrence type.")
+                };
+            }
         }
         else
         {
@@ -182,12 +216,30 @@ public class TaskPageViewModel : BaseViewModel
 
         if (_isEditMode)
         {
-            await _databaseService.UpdateTaskAsync(task);
+            var existingTask = await _context.PetTasks.FirstOrDefaultAsync(t => t.Id == task.Id);
+            if (existingTask != null)
+            {
+                existingTask.Title = task.Title;
+                existingTask.ScheduledDate = task.ScheduledDate;
+                existingTask.Notes = task.Notes;
+                existingTask.IsCompleted = task.IsCompleted;
+                existingTask.PetId = task.PetId;
+                existingTask.RecurrenceType = task.RecurrenceType;
+                existingTask.RecurrenceInterval = task.RecurrenceInterval;
+                existingTask.EndDate = task.EndDate;
+
+                await _context.SaveChangesAsync();
+            }
         }
         else
         {
-            await _databaseService.InsertTasksAsync(task);
+            await _context.PetTasks.AddAsync(task);
         }
+
+        await _context.SaveChangesAsync();
+
+        IsBusy = false;  // Hide loading indicator
+        NotifyCanSaveChanged();
 
         await Shell.Current.GoToAsync("..");
     }

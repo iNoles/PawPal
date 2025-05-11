@@ -1,85 +1,94 @@
 using System.Collections.ObjectModel;
 using System.Windows.Input;
+using Microsoft.EntityFrameworkCore;
+using PawPal.Data;
 using PawPal.Models;
-using PawPal.Services;
 using PawPal.Views;
 
-namespace PawPal.ViewModel;
-
-[QueryProperty(nameof(SelectedPet), nameof(SelectedPet))]
-public class PetDetailsViewModel : BaseViewModel
+namespace PawPal.ViewModel
 {
-    private readonly DatabaseService _databaseService;
-
-    private Pet? _selectedPet;
-    public Pet? SelectedPet
+    [QueryProperty(nameof(SelectedPet), nameof(SelectedPet))]
+    public class PetDetailsViewModel : BaseViewModel
     {
-        get => _selectedPet;
-        set
+        private readonly AppDataContext _context;
+
+        private Pet? _selectedPet;
+        public Pet? SelectedPet
         {
-            if (SetProperty(ref _selectedPet, value) && _selectedPet != null)
+            get => _selectedPet;
+            set
             {
-                _ = LoadUpcomingTasks(); // Fire and forget to avoid blocking UI
+                if (SetProperty(ref _selectedPet, value) && _selectedPet != null)
+                {
+                    _ = LoadUpcomingTasks(); // Fire-and-forget but will not block the UI
+                }
             }
         }
-    }
 
-
-    private ObservableCollection<Tasks> _upcomingTasks = [];
-    public ObservableCollection<Tasks> UpcomingTasks
-    {
-        get => _upcomingTasks;
-        set => SetProperty(ref _upcomingTasks, value);
-    }
-
-    // Commands
-    public ICommand EditProfileCommand { get; }
-    public ICommand ViewMedicalRecordsCommand { get; }
-
-    // Constructor
-    public PetDetailsViewModel(DatabaseService databaseService)
-    {
-        _databaseService = databaseService;
-
-        // Initialize commands
-        EditProfileCommand = new Command(async () => await EditProfile());
-        ViewMedicalRecordsCommand = new Command(async () => await ViewMedicalRecords());
-    }
-
-    private async Task LoadUpcomingTasks()
-    {
-        if (SelectedPet == null)
-            return;
-
-        try
+        private ObservableCollection<PetTask> _upcomingTasks = [];
+        public ObservableCollection<PetTask> UpcomingTasks
         {
-            var tasks = await _databaseService.GetTasksForPetAsync(SelectedPet.Id);
-            var filteredTasks = tasks.Where(t => !t.IsCompleted).OrderBy(t => t.ScheduledDate);
-            UpcomingTasks = [.. filteredTasks];
+            get => _upcomingTasks;
+            set => SetProperty(ref _upcomingTasks, value);
         }
-        catch (Exception ex)
+
+        // Commands
+        public ICommand EditProfileCommand { get; }
+        public ICommand ViewMedicalRecordsCommand { get; }
+
+        // Constructor
+        public PetDetailsViewModel(AppDataContext context)
         {
-            Console.WriteLine($"Error loading upcoming tasks: {ex.Message}");
+            _context = context;
+
+            // Initialize commands
+            EditProfileCommand = new Command(async () => await EditProfile());
+            ViewMedicalRecordsCommand = new Command(async () => await ViewMedicalRecords());
         }
-    }
 
+        // Async method to load upcoming tasks for the selected pet
+        private async Task LoadUpcomingTasks()
+        {
+            if (SelectedPet == null)
+                return;
 
-    private async Task EditProfile()
-    {
-        if (SelectedPet == null)
-            return;
+            try
+            {
+                var tasks = await _context.PetTasks.Where(t => t.PetId == SelectedPet.Id).ToListAsync();
+                var filteredTasks = tasks.Where(t => !t.IsCompleted).OrderBy(t => t.ScheduledDate);
 
-        // Navigate to the Edit Profile page
-        await Shell.Current.GoToAsync($"{nameof(TaskPage)}?editprofile?id={SelectedPet.Id}");
-    }
+                // Clear and add items to ObservableCollection
+                UpcomingTasks.Clear();
+                foreach (var task in filteredTasks)
+                {
+                    UpcomingTasks.Add(task);
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log or handle error here more robustly
+                Console.WriteLine($"Error loading upcoming tasks: {ex.Message}");
+            }
+        }
 
-    private async Task ViewMedicalRecords()
-    {
-        if (SelectedPet == null)
-            return;
+        // Command to edit pet profile
+        private async Task EditProfile()
+        {
+            if (SelectedPet == null)
+                return;
 
-        // Navigate to the Medical Records page
-        await Shell.Current.GoToAsync($"{nameof(MedicalRecordsPage)}?id={SelectedPet.Id}");
+            // Navigate to the Edit Profile page
+            await Shell.Current.GoToAsync($"{nameof(TaskPage)}?editprofile?id={SelectedPet.Id}");
+        }
 
+        // Command to view medical records for the selected pet
+        private async Task ViewMedicalRecords()
+        {
+            if (SelectedPet == null)
+                return;
+
+            // Navigate to the Medical Records page
+            await Shell.Current.GoToAsync($"{nameof(MedicalRecordsPage)}?id={SelectedPet.Id}");
+        }
     }
 }

@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
+using Microsoft.EntityFrameworkCore;
+using PawPal.Data;
 using PawPal.Models;
-using PawPal.Services;
 
 namespace PawPal.ViewModel;
 
@@ -8,7 +9,7 @@ namespace PawPal.ViewModel;
 //TODO: Tap to View/Edit Task
 public class CalendarViewModel : BaseViewModel
 {
-    private readonly DatabaseService _databaseService;
+    private readonly AppDataContext _context;
 
     public ObservableCollection<CalendarDay> VisibleCalendarDays { get; set; } = [];
     public string CurrentMonth => SelectedDate.ToString("MMMM yyyy");
@@ -41,9 +42,9 @@ public class CalendarViewModel : BaseViewModel
     public Command NavigatePreviousCommand { get; }
     public Command NavigateNextCommand { get; }
 
-    public CalendarViewModel(DatabaseService databaseService)
+    public CalendarViewModel(AppDataContext context)
     {
-        _databaseService = databaseService;
+        _context = context;
         SelectedDate = DateTime.Today;
         ToggleViewCommand = new Command(() => IsWeeklyView = !IsWeeklyView);
         NavigatePreviousCommand = new Command(() => ChangeDate(-1));
@@ -77,7 +78,10 @@ public class CalendarViewModel : BaseViewModel
         var days = new ObservableCollection<CalendarDay>();
         var startOfWeek = SelectedDate.AddDays(-(int)SelectedDate.DayOfWeek);
         var endOfWeek = startOfWeek.AddDays(6);
-        var tasks = await _databaseService.GetTasksForMonthAsync(startOfWeek);
+
+        var startOfMonth = new DateTime(startOfWeek.Year, startOfWeek.Month, 1);
+        var endOfMonth = startOfMonth.AddMonths(1).AddDays(-1);
+        var tasks = await _context.PetTasks.Where(task => task.ScheduledDate >= startOfMonth && task.ScheduledDate <= endOfMonth).ToListAsync();
 
         for (int i = 0; i < 7; i++)
         {
@@ -87,7 +91,7 @@ public class CalendarViewModel : BaseViewModel
             days.Add(new CalendarDay
             {
                 Date = currentDate,
-                HasTasks = dailyTasks.Any(),
+                HasTasks = dailyTasks.Count != 0,
                 IsCurrentMonth = currentDate.Month == SelectedDate.Month,
             });
         }
@@ -101,7 +105,10 @@ public class CalendarViewModel : BaseViewModel
         var firstDayOfGrid = firstDayOfMonth.AddDays(-(int)firstDayOfMonth.DayOfWeek);
         var lastDayOfGrid = firstDayOfMonth.AddMonths(1).AddDays(-1).AddDays(6 - (int)firstDayOfMonth.AddMonths(1).DayOfWeek);
 
-        var tasks = await _databaseService.GetTasksForMonthAsync(SelectedDate);
+        var startOfMonth = new DateTime(SelectedDate.Year, SelectedDate.Month, 1);
+        var endOfMonth = startOfMonth.AddMonths(1).AddDays(-1);
+
+        var tasks = await _context.PetTasks.Where(task => task.ScheduledDate >= startOfMonth && task.ScheduledDate <= endOfMonth).ToListAsync();
 
         for (var date = firstDayOfGrid; date <= lastDayOfGrid; date = date.AddDays(1))
         {

@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
-using PawPal.Services;
+using PawPal.Data;
 using PawPal.ViewModel;
 using Plugin.LocalNotification;
 
@@ -27,8 +27,9 @@ public static class MauiProgram
 			Console.WriteLine($"LocalNotification initialization failed: {ex.Message}");
 		}
 
-		// Register DatabaseService
-        builder.Services.AddSingleton<DatabaseService>();
+		// Register EF Core with SQLite
+		string dbPath = Path.Combine(FileSystem.AppDataDirectory, "app.db");
+		builder.Services.AddSingleton(s => new AppDataContext(dbPath));
 
 		// Register ViewModel
 		builder.Services.AddTransient<MainPageViewModel>();
@@ -41,7 +42,7 @@ public static class MauiProgram
 		builder.Services.AddTransient<AddVetContactViewModel>();
 
 #if DEBUG
-        builder.Logging.AddDebug(); // Adds debug logging in debug builds
+		builder.Logging.AddDebug(); // Adds debug logging in debug builds
 #else
 		builder.Logging.AddConsole(); // Optionally add console logging for other environments
 #endif

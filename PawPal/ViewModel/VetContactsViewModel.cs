@@ -1,13 +1,14 @@
 using System.Collections.ObjectModel;
+using Microsoft.EntityFrameworkCore;
+using PawPal.Data;
 using PawPal.Models;
-using PawPal.Services;
 using PawPal.Views;
 
 namespace PawPal.ViewModel;
 
 public class VetContactsViewModel : BaseViewModel
 {
-    private readonly DatabaseService _databaseService;
+    private readonly AppDataContext _context;
 
     private ObservableCollection<VetContact> _vetContacts = [];
     public ObservableCollection<VetContact> VetContacts
@@ -35,9 +36,9 @@ public class VetContactsViewModel : BaseViewModel
     public Command EmailVetCommand { get; }
     public Command NavigateToVetCommand { get; }
 
-    public VetContactsViewModel(DatabaseService databaseService)
+    public VetContactsViewModel(AppDataContext context)
     {
-        _databaseService = databaseService;
+        _context = context;
 
         AddVetContactCommand = new Command(OnAddVetContact);
         LoadVetContactsCommand = new Command(async () => await LoadVetContacts());
@@ -50,9 +51,9 @@ public class VetContactsViewModel : BaseViewModel
 
     private async Task LoadVetContacts()
     {
-        var contacts = await _databaseService.GetAllVetContactsAsync();
+        var contacts = await _context.VetContacts.ToListAsync();
         VetContacts = [.. contacts.OrderByDescending(c => c.IsEmergency)];
-        OnPropertyChanged(nameof(VetContacts)); 
+        OnPropertyChanged(nameof(VetContacts));
     }
 
     private static async void OnAddVetContact()
@@ -73,7 +74,7 @@ public class VetContactsViewModel : BaseViewModel
             await Launcher.OpenAsync(new Uri($"tel:{vet.PhoneNumber}"));
         }
     }
-    
+
     private static async Task EmailVet(VetContact vet)
     {
         if (!string.IsNullOrWhiteSpace(vet.Email))
@@ -81,7 +82,7 @@ public class VetContactsViewModel : BaseViewModel
             await Launcher.OpenAsync(new Uri($"mailto:{vet.Email}"));
         }
     }
-    
+
     private static async Task NavigateToVet(VetContact vet)
     {
         if (!string.IsNullOrWhiteSpace(vet.Address))

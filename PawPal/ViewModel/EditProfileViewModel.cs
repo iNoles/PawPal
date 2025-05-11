@@ -1,25 +1,26 @@
 using System.Windows.Input;
+using Microsoft.EntityFrameworkCore;
+using PawPal.Data;
 using PawPal.Models;
-using PawPal.Services;
 
 namespace PawPal.ViewModel;
 
 public class EditProfileViewModel : BaseViewModel
 {
-    private readonly DatabaseService _databaseService;
+    private readonly AppDataContext _context;
     public Pet? SelectedPet { get; private set; }
 
     public ICommand SaveCommand { get; }
 
-    public EditProfileViewModel(DatabaseService databaseService)
+    public EditProfileViewModel(AppDataContext context)
     {
-        _databaseService = databaseService;
+        _context = context;
         SaveCommand = new Command(async () => await SaveAsync());
     }
 
     public async Task InitializeAsync(int petId)
     {
-        SelectedPet = await _databaseService.GetPetByIdAsync(petId);
+        SelectedPet = await _context.Pets.FirstOrDefaultAsync(p => p.Id == petId);
         OnPropertyChanged(nameof(SelectedPet)); // Notify UI that SelectedPet is updated
     }
 
@@ -27,7 +28,8 @@ public class EditProfileViewModel : BaseViewModel
     {
         if (SelectedPet != null)
         {
-            await _databaseService.UpdatePetAsync(SelectedPet);
+            // EF Core automatically tracks changes, so no need to call Update
+            await _context.SaveChangesAsync();
             await Shell.Current.GoToAsync(".."); // Navigate back
         }
     }
