@@ -1,6 +1,6 @@
 # 🐾 PawPal - Pet Care Organizer
 
-PawPal is a .NET MAUI mobile application designed to help pet owners manage their pets' tasks, medical records, and vet contacts efficiently with SQLiteAsyncConnection for responsive database operations.
+PawPal is a .NET MAUI mobile application designed to help pet owners manage their pets' tasks, medical records, and vet contacts efficiently with EFCore Framework with SQLite for responsive database operations.
 
 ## Features
 
